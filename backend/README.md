@@ -1,6 +1,6 @@
 # Student Blog API
 
-This ASP.NET Core backend started initially as coursework my vocational degree in Backend Programming, but has continued to grow as I developed it beyond [the initial requirements.](./REQUIREMENTS.md)
+This ASP.NET Core backend started initially as coursework for my vocational degree in Backend Programming, but has continued to grow as I developed it beyond [the initial requirements.](./REQUIREMENTS.md)
 
 The API is made using ASP.NET Core and Entity Framework Core with a MySQL database.
 
