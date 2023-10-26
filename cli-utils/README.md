@@ -9,8 +9,13 @@ I changed a DTO on the backend, then realized I had to manually update the types
 
 ### Using the DTO converter
 
-```
-TODO: Add instructions for running
+The DTO converter takes two flags: in and out.
+Simply choose the folders containing your DTOs and the folder you want to add your converted dtos.
+
+For example, from the root of the student blog, I run:
+
+```zsh
+go run ./cli-utils/dto-converter/main.go --in=./backend/StudentBlogAPI/Model/DTOs --out=./frontend/dtos
 ```
 
 ### Limitations
@@ -23,13 +28,17 @@ TODO: Add instructions for running
 ## Log Finder
 
 No more meticulously searching for console.logs that might make it into production.
-I've intentionally left out node_modules and .* files from the log finder.
+I've intentionally left out node_modules and .* files (files that are best ignored) from the log finder.
 
 I should probably add this as a step in my CI/CD pipeline... tomorrow.
 
 ### Using the Log Finder
 
-```
-TODO: Add instructions
+The console log finder takes one flag, dir – the directory to scan.
+
+For example, from the root of this project I run:
+
+```zsh
+go run ./cli-utils/log-finder/main.go --dir=./frontend
 ```
 

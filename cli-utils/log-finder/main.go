@@ -11,8 +11,13 @@ import (
 
 func main() {
 	// Use a flag for input directory
-	root := flag.String("dir", ".", "directory to scan for console.log")
+	root := flag.String("dir", "", "directory to scan for console.log")
 	flag.Parse()
+
+	if *root == "" {
+		fmt.Println("Please specify the directory to scan")
+		os.Exit(1)
+	}
 
 	err := filepath.Walk(*root, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
@@ -20,11 +25,14 @@ func main() {
 		}
 
 		if info.IsDir() {
-			if info.Name() == "node_modules" {
+			// If the directory is "node_modules" or starts with ".", skip it.
+			if info.Name() == "node_modules" || strings.HasPrefix(info.Name(), ".") {
 				return filepath.SkipDir
 			}
+			// It's a directory we don't want to skip; continue the walk.
 			return nil
 		}
+
 		if strings.HasPrefix(info.Name(), ".") {
 			return nil
 		}
