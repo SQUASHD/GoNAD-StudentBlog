@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudentBlogAPI.Extensions;
 using StudentBlogAPI.Model.DTOs;
+using StudentBlogAPI.Model.Internal;
 using StudentBlogAPI.Services.Interfaces;
 
 namespace StudentBlogAPI.Controllers;
@@ -35,13 +36,14 @@ public class PostsController : ControllerBase
 
     [Authorize]
     [HttpPost(Name = "CreatePost")]
-    public async Task<ActionResult<PostResDto>> CreatePost(PostInput input)
+    public async Task<ActionResult<PostResDto>> CreatePost(PostInputReqDto inputReqDto)
     {
         var currentUserId = this.GetCurrentUserId(_jwtService);
-        var dto = new CreatePostDto(
+        
+        var dto = new InternalCreatePostData(
             currentUserId,
-            input.Title,
-            input.Content
+            inputReqDto.Title,
+            inputReqDto.Content
         );
 
         var createdPost = await _postService.CreateAsync(currentUserId, dto);
@@ -51,14 +53,14 @@ public class PostsController : ControllerBase
 
     [Authorize]
     [HttpPut("{postId}", Name = "UpdatePost")]
-    public async Task<ActionResult<PostResDto>> UpdatePost(int postId, PostInput input)
+    public async Task<ActionResult<PostResDto>> UpdatePost(int postId, PostInputReqDto inputReqDto)
     {
         var currentUserId = this.GetCurrentUserId(_jwtService);
 
         var dto = new UpdatePostDto(
             currentUserId,
-            input.Title,
-            input.Content
+            inputReqDto.Title,
+            inputReqDto.Content
         );
 
         var updatedPost = await _postService.UpdateAsync(currentUserId, postId, dto);

@@ -1,6 +1,7 @@
 using StudentBlogAPI.Exceptions;
 using StudentBlogAPI.Mappers.Interfaces;
 using StudentBlogAPI.Model.DTOs;
+using StudentBlogAPI.Model.Internal;
 using StudentBlogAPI.Repository.Interfaces;
 using StudentBlogAPI.Services.Interfaces;
 
@@ -29,7 +30,7 @@ public class UserService : IUserService
         return user != null ? _userMapper.MapToDto(user) : null;
     }
 
-    public async Task<UserResDto?> UpdateAsync(int currentUserId, int id, UpdateUserInput input)
+    public async Task<UserResDto?> UpdateAsync(int currentUserId, int id, UpdateUserInputReqDto inputReqDto)
     {
         var userToUpdate = await _userRepository.GetByIdAsync(id);
         if (userToUpdate == null) throw new ItemNotFoundException("The requested user was not found");
@@ -37,17 +38,17 @@ public class UserService : IUserService
         if (userToUpdate.Id != currentUserId || !userToUpdate.IsAdmin) throw new UserForbiddenException();
         var newSalt = BCrypt.Net.BCrypt.GenerateSalt();
         var oldSalt = userToUpdate.Salt;
-        var hashedOldPassword = BCrypt.Net.BCrypt.HashPassword(input.OldPassword, oldSalt);
+        var hashedOldPassword = BCrypt.Net.BCrypt.HashPassword(inputReqDto.OldPassword, oldSalt);
 
         if (hashedOldPassword != userToUpdate.HashedPassword)
             throw new PasswordMismatchException("Old password does not match");
 
-        var newHashedPassword = BCrypt.Net.BCrypt.HashPassword(input.NewPassword, newSalt);
+        var newHashedPassword = BCrypt.Net.BCrypt.HashPassword(inputReqDto.NewPassword, newSalt);
         
-        var updateUserData = new UpdateUserData(
+        var updateUserData = new InternalUpdateUserData(
             userToUpdate.Id,
-            input.FirstName,
-            input.LastName,
+            inputReqDto.FirstName,
+            inputReqDto.LastName,
             newHashedPassword,
             newSalt
         );

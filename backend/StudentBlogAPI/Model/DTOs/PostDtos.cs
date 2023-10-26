@@ -1,12 +1,6 @@
 namespace StudentBlogAPI.Model.DTOs;
 
-public record PostInput(
-    string Title,
-    string Content
-);
-
-public record CreatePostDto(
-    int UserId,
+public record PostInputReqDto(
     string Title,
     string Content
 );

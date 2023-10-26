@@ -7,5 +7,5 @@ namespace StudentBlogAPI.Mappers.Interfaces;
 public interface IAuthMapper
 {
     AuthResDto MapToDto(User model);
-    User MapToModel(AuthInternalDto dto);
+    User MapToModel(InternalAuthData dto);
 }

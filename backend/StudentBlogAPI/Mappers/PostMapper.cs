@@ -1,6 +1,7 @@
 using StudentBlogAPI.Mappers.Interfaces;
 using StudentBlogAPI.Model.DTOs;
 using StudentBlogAPI.Model.Entities;
+using StudentBlogAPI.Model.Internal;
 
 namespace StudentBlogAPI.Mappers;
 
@@ -18,13 +19,13 @@ public class PostMapper : IPostMapper
         );
     }
 
-    public Post MapCreateToModel(CreatePostDto dto)
+    public Post MapCreateToModel(InternalCreatePostData data)
     {
         return new Post
         {
-            UserId = dto.UserId,
-            Title = dto.Title,
-            Content = dto.Content
+            UserId = data.UserId,
+            Title = data.Title,
+            Content = data.Content
         };
     }
 

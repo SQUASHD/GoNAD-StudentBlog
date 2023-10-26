@@ -11,8 +11,8 @@ import (
 )
 
 func main() {
-	inputDir := flag.String("input", "", "Directory with C# DTO files")
-	outputDir := flag.String("output", "", "Directory to save TypeScript files")
+	inputDir := flag.String("in", "", "Directory with C# DTO files")
+	outputDir := flag.String("out", "", "Directory to save TypeScript files")
 	flag.Parse()
 
 	if *inputDir == "" || *outputDir == "" {

@@ -1,6 +1,7 @@
 using StudentBlogAPI.Mappers.Interfaces;
 using StudentBlogAPI.Model.DTOs;
 using StudentBlogAPI.Model.Entities;
+using StudentBlogAPI.Model.Internal;
 
 namespace StudentBlogAPI.Mappers;
 
@@ -18,23 +19,23 @@ public class CommentMapper : ICommentMapper
             );
     }
 
-    public Comment MapCreateToModel(CreateCommentDto dto)
+    public Comment MapCreateToModel(InternalCreateCommentData data)
     {
         return new Comment
         {
-            PostId = dto.PostId,
-            UserId = dto.UserId,
-            Content = dto.Content
+            PostId = data.PostId,
+            UserId = data.UserId,
+            Content = data.Content
         };
     }
 
-    public Comment MapUpdateToModel(UpdateCommentDto dto)
+    public Comment MapUpdateToModel(InternalUpdateCommentData data)
     {
         return new Comment
         {
-            Id = dto.Id,
-            UserId = dto.UserId,
-            Content = dto.Content,
+            Id = data.Id,
+            UserId = data.UserId,
+            Content = data.Content,
         };
     }
 

@@ -15,7 +15,7 @@ public class AuthMapper : IAuthMapper
         );
     }
 
-    public User MapToModel(AuthInternalDto dto)
+    public User MapToModel(InternalAuthData dto)
     {
         return new User
         {

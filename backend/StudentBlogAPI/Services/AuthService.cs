@@ -20,20 +20,20 @@ public class AuthService : IAuthService
         _jwtService = jwtService;
     }
 
-    public async Task<AuthResWithTokenDto> RegisterAsync(UserRegisterDto dto)
+    public async Task<AuthWithTokenResDto> RegisterAsync(UserRegisterReqDto reqDto)
     {
-        var existingUser = await _userRepository.GetEmailsAndUsernamesAsync(dto.Email, dto.UserName);
+        var existingUser = await _userRepository.GetEmailsAndUsernamesAsync(reqDto.Email, reqDto.UserName);
         if (existingUser != null)
             throw new UserAlreadyExistsException();
 
         var salt = BCrypt.Net.BCrypt.GenerateSalt();
-        var hashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password, salt);
+        var hashedPassword = BCrypt.Net.BCrypt.HashPassword(reqDto.Password, salt);
 
-        var authCreateData = new AuthInternalDto(
-            dto.UserName,
-            dto.FirstName,
-            dto.LastName,
-            dto.Email,
+        var authCreateData = new InternalAuthData(
+            reqDto.UserName,
+            reqDto.FirstName,
+            reqDto.LastName,
+            reqDto.Email,
             hashedPassword,
             salt
         );
@@ -44,7 +44,7 @@ public class AuthService : IAuthService
         var accessToken = _jwtService.GenerateAccessToken(createdUser.Id);
         var refreshToken = _jwtService.GenerateRefreshToken(createdUser.Id);
 
-        var authResDto = new AuthResWithTokenDto(
+        var authResDto = new AuthWithTokenResDto(
             createdUser.Id,
             createdUser.UserName,
             accessToken,
@@ -54,13 +54,13 @@ public class AuthService : IAuthService
         return authResDto;
     }
 
-    public async Task<AuthResWithTokenDto> LoginAsync(UserLoginDto payloadDto)
+    public async Task<AuthWithTokenResDto> LoginAsync(UserLoginReqDto payloadReqDto)
     {
-        var userToLogin = await _userRepository.GetByUsernameAsync(payloadDto.UserName);
+        var userToLogin = await _userRepository.GetByUsernameAsync(payloadReqDto.UserName);
         if (userToLogin == null) throw new BadLoginRequestException();
 
         var oldSalt = userToLogin.Salt;
-        var hashedPassword = BCrypt.Net.BCrypt.HashPassword(payloadDto.Password, oldSalt);
+        var hashedPassword = BCrypt.Net.BCrypt.HashPassword(payloadReqDto.Password, oldSalt);
 
         if (hashedPassword != userToLogin.HashedPassword)
             throw new BadLoginRequestException();
@@ -69,7 +69,7 @@ public class AuthService : IAuthService
         var accessToken = _jwtService.GenerateAccessToken(userToLogin.Id);
         var refreshToken = _jwtService.GenerateRefreshToken(userToLogin.Id);
 
-        var authResWithTokenDto = new AuthResWithTokenDto(
+        var authResWithTokenDto = new AuthWithTokenResDto(
             authResDto.Id,
             authResDto.UserName,
             accessToken,

@@ -4,19 +4,12 @@ type UserResDto = {
   firstName: string;
   lastName: string;
   email: string;
-  createdAt: string; // Represents a DateTime. Format: ISO string
-  updatedAt: string; // Represents a DateTime. Format: ISO string
+  createdAt: string; // Represents a DateTime type in string format
+  updatedAt: string; // Represents a DateTime type in string format
 }
-type UpdateUserInput = {
+type UpdateUserInputReqDto = {
   firstName: string;
   lastName: string;
   oldPassword: string;
   newPassword: string;
-}
-type UpdateUserData = {
-  userId: number;
-  firstName: string;
-  lastName: string;
-  hashedNewPassword: string;
-  newSalt: string;
 }

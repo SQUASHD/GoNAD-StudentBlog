@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudentBlogAPI.Extensions;
 using StudentBlogAPI.Model.DTOs;
+using StudentBlogAPI.Model.Internal;
 using StudentBlogAPI.Services.Interfaces;
 
 namespace StudentBlogAPI.Controllers;
@@ -27,15 +28,15 @@ public class CommentsController : ControllerBase
     }
 
     [HttpPost("posts/{postId}/comments", Name = "CreateComment")]
-    public async Task<ActionResult<CommentResDto>> CreateComment(int postId, CommentInput input)
+    public async Task<ActionResult<CommentResDto>> CreateComment(int postId, CommentInputReqDto inputReqDto)
     {
 
         var currentUserId = this.GetCurrentUserId(_jwtService);
 
-        var dto = new CreateCommentDto(
+        var dto = new InternalCreateCommentData(
             postId,
             currentUserId,
-            input.Content
+            inputReqDto.Content
         );
         var newComment = await _commentService.CreateAsync(dto);
         return Ok(newComment);
@@ -43,14 +44,14 @@ public class CommentsController : ControllerBase
 
     [Authorize]
     [HttpPut("comments/{commentId}", Name = "UpdateComment")]
-    public async Task<ActionResult<CommentResDto>> UpdateComment(int commentId, CommentInput input)
+    public async Task<ActionResult<CommentResDto>> UpdateComment(int commentId, CommentInputReqDto inputReqDto)
     {
         var currentUserId = this.GetCurrentUserId(_jwtService);
 
-        var dto = new UpdateCommentDto(
+        var dto = new InternalUpdateCommentData(
             commentId,
             currentUserId,
-            input.Content
+            inputReqDto.Content
         );
 
         var updatedComment = await _commentService.UpdateAsync(currentUserId, commentId, dto);

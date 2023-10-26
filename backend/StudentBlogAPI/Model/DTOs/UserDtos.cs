@@ -10,17 +10,10 @@ public record UserResDto(
     DateTime UpdatedAt
 );
 
-public record UpdateUserInput(
+public record UpdateUserInputReqDto(
     string FirstName,
     string LastName,
     string OldPassword,
     string NewPassword
 );
 
-public record UpdateUserData(
-    int UserId,
-    string FirstName,
-    string LastName,
-    string HashedNewPassword,
-    string NewSalt
-);

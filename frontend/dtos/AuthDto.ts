@@ -2,27 +2,20 @@ type AuthResDto = {
   id: number;
   userName: string;
 }
-type AuthResWithTokenDto = {
+type AuthWithTokenResDto = {
   id: number;
   userName: string;
-  token: string;
+  accessToken: string;
+  refreshToken: string;
 }
-type UserRegisterDto = {
+type UserRegisterReqDto = {
   userName: string;
   firstName: string;
   lastName: string;
   email: string; // [ValidEmail]
   password: string;
 }
-type PreparedUserDto = {
-  userName: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  hashedPassword: string;
-  salt: string;
-}
-type UserLoginDto = {
+type UserLoginReqDto = {
   userName: string;
   password: string;
 }

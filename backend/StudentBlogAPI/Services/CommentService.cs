@@ -2,6 +2,7 @@ using StudentBlogAPI.Exceptions;
 using StudentBlogAPI.Mappers.Interfaces;
 using StudentBlogAPI.Model.DTOs;
 using StudentBlogAPI.Model.Entities;
+using StudentBlogAPI.Model.Internal;
 using StudentBlogAPI.Repository.Interfaces;
 using StudentBlogAPI.Services.Interfaces;
 
@@ -25,21 +26,21 @@ public class CommentService : ICommentService
         return comment != null ? _commentMapper.MapToDto(comment) : null;
     }
 
-    public async Task<CommentResDto?> CreateAsync(CreateCommentDto dto)
+    public async Task<CommentResDto?> CreateAsync(InternalCreateCommentData data)
     {
-        var comment = _commentMapper.MapCreateToModel(dto);
+        var comment = _commentMapper.MapCreateToModel(data);
         var createdComment = await _commentRepository.CreateAsync(comment);
         return _commentMapper.MapToDto(createdComment);
     }
 
-    public async Task<CommentResDto?> UpdateAsync(int currentUserId, int id, UpdateCommentDto dto)
+    public async Task<CommentResDto?> UpdateAsync(int currentUserId, int id, InternalUpdateCommentData data)
     {
         var existingComment = await _commentRepository.GetByIdAsync(id);
         if (existingComment == null) throw new ItemNotFoundException();
 
         if (existingComment.UserId != currentUserId) throw new UserForbiddenException();
 
-        var comment = _commentMapper.MapUpdateToModel(dto);
+        var comment = _commentMapper.MapUpdateToModel(data);
         var updatedComment = await _commentRepository.UpdateAsync(id, comment);
         return updatedComment != null ? _commentMapper.MapToDto(updatedComment) : null;
     }

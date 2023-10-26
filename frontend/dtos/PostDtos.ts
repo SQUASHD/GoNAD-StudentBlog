@@ -1,9 +1,4 @@
-type PostInput = {
-  title: string;
-  content: string;
-}
-type CreatePostDto = {
-  userId: number;
+type PostInputReqDto = {
   title: string;
   content: string;
 }
@@ -17,6 +12,6 @@ type PostResDto = {
   userId: number;
   title: string;
   content: string;
-  createdAt: string; // Represents a DateTime. Format: ISO string
-  updatedAt: string; // Represents a DateTime. Format: ISO string
+  createdAt: string; // Represents a DateTime type in string format
+  updatedAt: string; // Represents a DateTime type in string format
 }

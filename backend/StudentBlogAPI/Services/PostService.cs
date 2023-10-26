@@ -2,6 +2,7 @@ using StudentBlogAPI.Exceptions;
 using StudentBlogAPI.Mappers.Interfaces;
 using StudentBlogAPI.Model.DTOs;
 using StudentBlogAPI.Model.Entities;
+using StudentBlogAPI.Model.Internal;
 using StudentBlogAPI.Repository.Interfaces;
 using StudentBlogAPI.Services.Interfaces;
 
@@ -30,9 +31,9 @@ public class PostService : IPostService
         return post != null ? _postMapper.MapToDto(post) : null;
     }
 
-    public async Task<PostResDto?> CreateAsync(int userId, CreatePostDto dto)
+    public async Task<PostResDto?> CreateAsync(int userId, InternalCreatePostData data)
     {
-        var post = _postMapper.MapCreateToModel(dto);
+        var post = _postMapper.MapCreateToModel(data);
         var createdPost = await _postRepository.CreateAsync(post);
         return _postMapper.MapToDto(createdPost);
     }

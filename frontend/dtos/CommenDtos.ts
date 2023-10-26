@@ -3,19 +3,9 @@ type CommentResDto = {
   postId: number;
   userId: number;
   content: string;
-  createdAt: string; // Represents a DateTime. Format: ISO string
-  updatedAt: string; // Represents a DateTime. Format: ISO string
+  createdAt: string; // Represents a DateTime type in string format
+  updatedAt: string; // Represents a DateTime type in string format
 }
-type CommentInput = {
-  content: string;
-}
-type CreateCommentDto = {
-  postId: number;
-  userId: number;
-  content: string;
-}
-type UpdateCommentDto = {
-  id: number;
-  userId: number;
+type CommentInputReqDto = {
   content: string;
 }

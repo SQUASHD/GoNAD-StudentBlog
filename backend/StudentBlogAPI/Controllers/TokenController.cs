@@ -17,7 +17,7 @@ public class TokenController : ControllerBase
     }
  
     [HttpPost("api/v1/refresh", Name = "RefreshToken")]
-    public async Task<ActionResult<AuthResWithTokenDto>> RefreshAccessToken()
+    public async Task<ActionResult<AuthWithTokenResDto>> RefreshAccessToken()
     {
         var userId = this.GetCurrentUserId(_jwtService);
         var refreshToken = _jwtService.GetTokenFromRequest(HttpContext);

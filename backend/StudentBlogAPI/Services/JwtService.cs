@@ -72,13 +72,13 @@ public class JwtService : IJwtService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public async Task<RefreshAccessTokenDto> RefreshAccessToken(string refreshToken, int userId)
+    public async Task<AccessTokenResDto> RefreshAccessToken(string refreshToken, int userId)
     {
         var valid = await ValidateRefreshToken(refreshToken);
         if (!valid) throw new InvalidJwtException("Invalid refresh token");
         var accessToken = GenerateAccessToken(userId);
         
-        return new RefreshAccessTokenDto(accessToken);
+        return new AccessTokenResDto(accessToken);
 
     }
 
@@ -129,7 +129,7 @@ public class JwtService : IJwtService
     {
         var userId = GetUserIdFromToken(token);
         
-        var internalData = new RevokeDataInternalDto(
+        var internalData = new InternalRevokeTokenData(
             token,
             userId
         );

@@ -38,10 +38,10 @@ public class UsersController : ControllerBase
 
     [Authorize]
     [HttpPut("{userId}", Name = "UpdateUser")]
-    public async Task<ActionResult<UserResDto>> UpdateUser(int userId, UpdateUserInput userInput)
+    public async Task<ActionResult<UserResDto>> UpdateUser(int userId, UpdateUserInputReqDto resDto)
     {
         var currentUserId = this.GetCurrentUserId(_jwtService);
-        var updatedUser = await _userService.UpdateAsync(currentUserId, userId, userInput);
+        var updatedUser = await _userService.UpdateAsync(currentUserId, userId, resDto);
 
         return updatedUser != null ? Ok(updatedUser) : NotFound();
     }
@@ -50,7 +50,7 @@ public class UsersController : ControllerBase
     [HttpDelete("{userId}", Name = "DeleteUser")]
     public async Task<ActionResult<UserResDto>> DeleteUser(int userId)
     {
-        var currentUserId = this.GetCurrentUserId(_jwtService);;
+        var currentUserId = this.GetCurrentUserId(_jwtService);
         var deletedUser = await _userService.DeleteAsync(currentUserId, userId);
 
         return Ok(deletedUser);

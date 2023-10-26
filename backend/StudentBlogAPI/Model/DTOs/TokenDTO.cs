@@ -1,6 +1,6 @@
 namespace StudentBlogAPI.Model.DTOs;
 
-public record RefreshAccessTokenDto(
+public record AccessTokenResDto(
     string Token
     );
     

@@ -1,6 +1,7 @@
 using StudentBlogAPI.Mappers.Interfaces;
 using StudentBlogAPI.Model.DTOs;
 using StudentBlogAPI.Model.Entities;
+using StudentBlogAPI.Model.Internal;
 
 namespace StudentBlogAPI.Mappers;
 
@@ -19,7 +20,7 @@ public class UserMapper : IUserMapper
         );
     }
 
-    public User MapUpdateToModel(UpdateUserData data)
+    public User MapUpdateToModel(InternalUpdateUserData data)
     {
         return new User
         {

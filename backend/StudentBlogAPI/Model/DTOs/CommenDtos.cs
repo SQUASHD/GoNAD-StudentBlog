@@ -11,18 +11,6 @@ public record CommentResDto(
     DateTime UpdatedAt
 );
 
-public record CommentInput(
+public record CommentInputReqDto(
     [MinLength(6)] [MaxLength(140)] string Content
     );
-
-public record CreateCommentDto(
-    int PostId,
-    int UserId,
-    string Content
-);
-
-public record UpdateCommentDto(
-    int Id,
-    int UserId,
-    string Content
-);
