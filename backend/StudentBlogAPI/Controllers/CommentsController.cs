@@ -30,7 +30,6 @@ public class CommentsController : ControllerBase
     [HttpPost("posts/{postId}/comments", Name = "CreateComment")]
     public async Task<ActionResult<CommentResDto>> CreateComment(int postId, CommentInputReqDto inputReqDto)
     {
-
         var currentUserId = this.GetCurrentUserId(_jwtService);
 
         var dto = new InternalCreateCommentData(
@@ -62,7 +61,8 @@ public class CommentsController : ControllerBase
     [HttpDelete("comments/{commentId}", Name = "DeleteComment")]
     public async Task<ActionResult<CommentResDto>> DeleteComment(int id)
     {
-        var currentUserId = this.GetCurrentUserId(_jwtService);;
+        var currentUserId = this.GetCurrentUserId(_jwtService);
+        ;
         var deletedComment = await _commentService.DeleteAsync(currentUserId, id);
         return Ok(deletedComment);
     }

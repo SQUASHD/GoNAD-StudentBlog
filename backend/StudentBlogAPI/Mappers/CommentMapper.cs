@@ -16,7 +16,7 @@ public class CommentMapper : ICommentMapper
             model.Content,
             model.CreatedAt,
             model.UpdatedAt
-            );
+        );
     }
 
     public Comment MapCreateToModel(InternalCreateCommentData data)
@@ -35,7 +35,7 @@ public class CommentMapper : ICommentMapper
         {
             Id = data.Id,
             UserId = data.UserId,
-            Content = data.Content,
+            Content = data.Content
         };
     }
 

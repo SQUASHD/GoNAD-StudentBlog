@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudentBlogAPI.Extensions;
 using StudentBlogAPI.Model.DTOs;
@@ -10,12 +9,12 @@ namespace StudentBlogAPI.Controllers;
 public class TokenController : ControllerBase
 {
     private readonly IJwtService _jwtService;
-    
+
     public TokenController(IJwtService jwtService)
     {
         _jwtService = jwtService;
     }
- 
+
     [HttpPost("api/v1/refresh", Name = "RefreshToken")]
     public async Task<ActionResult<AuthWithTokenResDto>> RefreshAccessToken()
     {
@@ -24,7 +23,7 @@ public class TokenController : ControllerBase
         var newAccessToken = await _jwtService.RefreshAccessToken(refreshToken, userId);
         return Ok(newAccessToken);
     }
-    
+
     [HttpPost("api/v1/revoke", Name = "RevokeToken")]
     public async Task<ActionResult> RevokeToken()
     {

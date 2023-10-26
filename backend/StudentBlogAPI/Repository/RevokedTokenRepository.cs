@@ -8,7 +8,7 @@ namespace StudentBlogAPI.Repository;
 public class RevokedTokenRepository : IRevokedTokenRepository
 {
     private readonly StudentBlogDbContext _dbContext;
-    
+
     public RevokedTokenRepository(StudentBlogDbContext dbContext)
     {
         _dbContext = dbContext;

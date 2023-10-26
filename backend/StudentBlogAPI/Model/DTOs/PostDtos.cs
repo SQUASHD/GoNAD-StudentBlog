@@ -5,12 +5,6 @@ public record PostInputReqDto(
     string Content
 );
 
-public record UpdatePostDto(
-    int UserId,
-    string Title,
-    string Content
-);
-
 public record PostResDto(
     int Id,
     int UserId,

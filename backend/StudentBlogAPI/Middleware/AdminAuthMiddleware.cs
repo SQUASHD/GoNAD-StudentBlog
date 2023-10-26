@@ -22,7 +22,8 @@ public class AdminRoleHandler : AuthorizationHandler<AdminRoleRequirement>
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context,
         AdminRoleRequirement requirement)
     {
-        var currentUserId = this.GetCurrentUserId(_jwtService);;
+        var currentUserId = GetCurrentUserId(_jwtService);
+        ;
 
         var user = await _dbContext.Users.FindAsync(currentUserId);
 

@@ -38,13 +38,13 @@ public class PostService : IPostService
         return _postMapper.MapToDto(createdPost);
     }
 
-    public async Task<PostResDto?> UpdateAsync(int userId, int id, UpdatePostDto dto)
+    public async Task<PostResDto?> UpdateAsync(int userId, int id, InternalUpdatePostData data)
     {
         var existingPost = await _postRepository.GetByIdAsync(id);
         if (existingPost == null) throw new ItemNotFoundException("Post not found");
         if (existingPost.UserId != userId) throw new UserForbiddenException();
 
-        var post = _postMapper.MapUpdateToModel(dto);
+        var post = _postMapper.MapUpdateToModel(data);
         post.UserId = userId;
         var updatedPost = await _postRepository.UpdateAsync(id, post);
         return updatedPost != null ? _postMapper.MapToDto(updatedPost) : null;

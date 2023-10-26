@@ -39,7 +39,7 @@ public class PostsController : ControllerBase
     public async Task<ActionResult<PostResDto>> CreatePost(PostInputReqDto inputReqDto)
     {
         var currentUserId = this.GetCurrentUserId(_jwtService);
-        
+
         var dto = new InternalCreatePostData(
             currentUserId,
             inputReqDto.Title,
@@ -57,7 +57,7 @@ public class PostsController : ControllerBase
     {
         var currentUserId = this.GetCurrentUserId(_jwtService);
 
-        var dto = new UpdatePostDto(
+        var dto = new InternalUpdatePostData(
             currentUserId,
             inputReqDto.Title,
             inputReqDto.Content

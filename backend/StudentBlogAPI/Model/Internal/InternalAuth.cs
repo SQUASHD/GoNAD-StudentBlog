@@ -12,5 +12,4 @@ public record InternalAuthData(
 public record InternalRevokeTokenData(
     string Token,
     int UserId
-    );
-    
+);

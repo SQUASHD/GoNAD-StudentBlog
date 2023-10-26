@@ -29,13 +29,13 @@ public class PostMapper : IPostMapper
         };
     }
 
-    public Post MapUpdateToModel(UpdatePostDto dto)
+    public Post MapUpdateToModel(InternalUpdatePostData data)
     {
         return new Post
         {
-            UserId = dto.UserId,
-            Title = dto.Title,
-            Content = dto.Content
+            UserId = data.UserId,
+            Title = data.Title,
+            Content = data.Content
         };
     }
 

@@ -14,18 +14,18 @@ public class AuthController : ControllerBase
     {
         _authService = authService;
     }
-    
+
     [HttpPost("login", Name = "Login")]
     public async Task<ActionResult<AuthWithTokenResDto>> Login(UserLoginReqDto userLoginReqDto)
     {
-        var authResWithTokenDto = await _authService.LoginAsync(userLoginReqDto);
-        return Ok(authResWithTokenDto);
+        var authWithTokenResDto = await _authService.LoginAsync(userLoginReqDto);
+        return Ok(authWithTokenResDto);
     }
 
     [HttpPost("register", Name = "Register")]
     public async Task<ActionResult<AuthWithTokenResDto>> Register(UserRegisterReqDto registerReqDto)
     {
-        var authResWithTokenDto = await _authService.RegisterAsync(registerReqDto);
-        return Ok(authResWithTokenDto);
+        var authWithTokenResDto = await _authService.RegisterAsync(registerReqDto);
+        return Ok(authWithTokenResDto);
     }
 }

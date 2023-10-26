@@ -9,6 +9,6 @@ public interface IPostMapper
     PostResDto MapToDto(Post model);
 
     Post MapCreateToModel(InternalCreatePostData data);
-    Post MapUpdateToModel(UpdatePostDto dto);
+    Post MapUpdateToModel(InternalUpdatePostData data);
     ICollection<PostResDto> MapCollection(ICollection<Post> models);
 }

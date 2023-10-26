@@ -44,7 +44,7 @@ public class UserService : IUserService
             throw new PasswordMismatchException("Old password does not match");
 
         var newHashedPassword = BCrypt.Net.BCrypt.HashPassword(inputReqDto.NewPassword, newSalt);
-        
+
         var updateUserData = new InternalUpdateUserData(
             userToUpdate.Id,
             inputReqDto.FirstName,
@@ -52,7 +52,7 @@ public class UserService : IUserService
             newHashedPassword,
             newSalt
         );
-        
+
         userToUpdate = _userMapper.MapUpdateToModel(updateUserData);
 
         var updatedUser = await _userRepository.UpdateAsync(id, userToUpdate);

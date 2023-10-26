@@ -14,8 +14,8 @@ namespace StudentBlogAPI.Services;
 public class JwtService : IJwtService
 {
     private readonly IConfiguration _config;
-    private readonly IRevokedTokenRepository _tokenRepository;
     private readonly ITokenMapper _tokenMapper;
+    private readonly IRevokedTokenRepository _tokenRepository;
 
     public JwtService(IConfiguration configuration, IRevokedTokenRepository tokenRepository, ITokenMapper tokenMapper)
     {
@@ -61,10 +61,10 @@ public class JwtService : IJwtService
         {
             new Claim("user_id", userId.ToString()) // Custom claim
         };
-        
+
         var token = new JwtSecurityToken(
             _config["Jwt:RefreshIssuer"],
-            claims: claims,// Replace with your app's name
+            claims: claims, // Replace with your app's name
             expires: DateTime.Now.AddDays(24), // Token expiry
             signingCredentials: credentials
         );
@@ -77,18 +77,15 @@ public class JwtService : IJwtService
         var valid = await ValidateRefreshToken(refreshToken);
         if (!valid) throw new InvalidJwtException("Invalid refresh token");
         var accessToken = GenerateAccessToken(userId);
-        
-        return new AccessTokenResDto(accessToken);
 
+        return new AccessTokenResDto(accessToken);
     }
 
     public int GetUserIdFromToken(string token)
     {
         var jwtKey = _config["Jwt:Key"];
         if (string.IsNullOrEmpty(jwtKey))
-        {
             throw new InvalidOperationException("The JWT secret key is missing from the configuration.");
-        }
 
         var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -98,16 +95,14 @@ public class JwtService : IJwtService
             ValidateIssuer = false,
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
-            ValidateLifetime = false 
+            ValidateLifetime = false
         };
 
         var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out _);
 
         var userIdClaim = principal.FindFirst(claim => claim.Type == "user_id");
         if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out var userId))
-        {
             throw new InvalidOperationException("Invalid token: user_id claim not found or invalid.");
-        }
 
         return userId;
     }
@@ -116,19 +111,17 @@ public class JwtService : IJwtService
     {
         var header = httpContext.Request.Headers["Authorization"].FirstOrDefault();
         if (string.IsNullOrEmpty(header) || !header.StartsWith("Bearer "))
-        {
             throw new InvalidJwtException("No token found in header.");
-        }
 
         var token = header.Substring("Bearer ".Length).Trim();
-        
+
         return token;
     }
 
     public async Task<bool> RevokeRefreshToken(string token)
     {
         var userId = GetUserIdFromToken(token);
-        
+
         var internalData = new InternalRevokeTokenData(
             token,
             userId
@@ -144,20 +137,20 @@ public class JwtService : IJwtService
         var signingKey =
             new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(_config["Jwt:Key"] ?? throw new InvalidOperationException()));
-        
+
         jwtHandler.ValidateToken(token, new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = signingKey, 
+            IssuerSigningKey = signingKey,
             ValidateIssuer = true,
             ValidIssuer = _config["Jwt:RefreshIssuer"],
             ValidateAudience = false,
             ValidateLifetime = true
         }, out var validatedToken);
-        
+
         var isRevoked = await _tokenRepository.IsTokenRevoked(token);
         if (isRevoked) return false;
-        
+
         return validatedToken != null;
     }
 }

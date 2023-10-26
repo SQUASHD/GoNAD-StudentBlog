@@ -74,7 +74,7 @@ public class AuthService : IAuthService
             authResDto.UserName,
             accessToken,
             refreshToken
-            );
+        );
 
         return authResWithTokenDto;
     }

@@ -11,5 +11,4 @@ public class RevokedToken
     [Required] public string Token { get; set; } = string.Empty;
     [Required] public DateTime CreatedAt { get; set; } = DateTime.Now;
     [ForeignKey("UserId")] public int UserId { get; set; }
-    
 }

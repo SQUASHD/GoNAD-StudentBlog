@@ -1,5 +1,3 @@
-using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc;
 using StudentBlogAPI.Model.DTOs;
 
 namespace StudentBlogAPI.Services.Interfaces;
