@@ -13,13 +13,15 @@ public class CommentServiceTests
 {
     private readonly Mock<ICommentMapper> _commentMapperMock;
     private readonly Mock<ICommentRepository> _commentRepositoryMock;
+    private readonly Mock<IPostRepository> _postRepositoryMock;
     private readonly CommentService _commentService;
 
     public CommentServiceTests()
     {
         _commentMapperMock = new Mock<ICommentMapper>();
         _commentRepositoryMock = new Mock<ICommentRepository>();
-        _commentService = new CommentService(_commentMapperMock.Object, _commentRepositoryMock.Object);
+        _postRepositoryMock = new Mock<IPostRepository>();
+        _commentService = new CommentService(_commentMapperMock.Object, _commentRepositoryMock.Object, _postRepositoryMock.Object);
     }
 
     [Fact]
@@ -64,7 +66,7 @@ public class CommentServiceTests
         const int totalPosts = 0;
         _commentRepositoryMock.Setup(x => x.GetAllAsync(pageNumber, pageSize)).ReturnsAsync((comments, totalPosts));
 
-        // Act & Assert
+        // Act
         await Assert.ThrowsAsync<ItemNotFoundException>(() => _commentService.GetAllAsync(pageNumber, pageSize));
     }
 
@@ -76,16 +78,17 @@ public class CommentServiceTests
         var createdDate = DateTime.Now;
         var comments = new List<Comment>
             {
-                new() { Id = 1, Content = "Comment 1" },
-                new() { Id = 2, Content = "Comment 2" }
+                new() { Id = 1, Content = "Comment 1" , CreatedAt = createdDate, PostId = 1, UserId = 1 , UpdatedAt = createdDate},
+                new() { Id = 2, Content = "Comment 2", CreatedAt = createdDate , PostId = 1 , UserId = 2, UpdatedAt = createdDate}
             };
         var commentsDto = new List<CommentResDto>
             {
-                new CommentResDto(1, postId, 1, "Comment 1", DateTime.Now, DateTime.Now),
-                new CommentResDto(2, postId, 2, "Comment 2", DateTime.Now, DateTime.Now)
+                new CommentResDto(1, postId, 1, "Comment 1", createdDate, createdDate),
+                new CommentResDto(2, postId, 2, "Comment 2", createdDate, createdDate )
             };
         _commentRepositoryMock.Setup(x => x.GetCommentsByPostIdAsync(postId)).ReturnsAsync(comments);
         _commentMapperMock.Setup(x => x.MapCollection(comments)).Returns(commentsDto);
+        _postRepositoryMock.Setup(x => x.GetByIdAsync(postId)).ReturnsAsync(new Post { Id = postId });
 
         // Act
         var result = await _commentService.GetCommentsByPostIdAsync(postId);
@@ -95,11 +98,24 @@ public class CommentServiceTests
     }
 
     [Fact]
+    public async Task CreateAsync_ThrowsIfPostDoesNotExist()
+    {
+        // Arrange
+        const int postId = 1;
+        var comment = new Comment { Id = 1, Content = "Comment 1", PostId = 1};
+        
+        _postRepositoryMock.Setup(x => x.GetByIdAsync(postId)).ReturnsAsync((Post?)null);
+        
+        // Act & Assert
+        await Assert.ThrowsAsync<ItemNotFoundException>(() => _commentService.CreateAsync(new InternalCreateCommentData(1, postId, "Comment 1")));
+    }
+
+    [Fact]
     public async Task GetCommentsByPostIdAsync_ThrowsItemNotFoundException_WhenCommentsDoNotExist()
     {
         // Arrange
         var postId = 1;
-        List<Comment> comments = null;
+        List<Comment>? comments = null;
         _commentRepositoryMock.Setup(x => x.GetCommentsByPostIdAsync(postId)).ReturnsAsync(comments);
 
         // Act & Assert
