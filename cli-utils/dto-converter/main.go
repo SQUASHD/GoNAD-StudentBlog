@@ -95,7 +95,7 @@ func convertFile(filePath, outputFilePath string) {
 			// Assumes that the end of a record is defined as );
 		} else if strings.Contains(line, ");") && typeName != "" && len(fields) > 0 {
 			// Write to file
-			output := "type " + typeName + " = {\n" + strings.Join(fields, "\n") + "\n}\n"
+			output := "export type " + typeName + " = {\n" + strings.Join(fields, "\n") + "\n}\n"
 			f, err := os.OpenFile(outputFilePath, os.O_APPEND|os.O_WRONLY, 0644)
 			if err != nil {
 				panic(err)
