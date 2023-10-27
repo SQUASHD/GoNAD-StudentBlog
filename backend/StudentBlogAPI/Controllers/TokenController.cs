@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudentBlogAPI.Extensions;
 using StudentBlogAPI.Model.DTOs;
@@ -15,6 +16,7 @@ public class TokenController : ControllerBase
         _jwtService = jwtService;
     }
 
+    [AllowAnonymous]
     [HttpPost("api/v1/refresh", Name = "RefreshToken")]
     public async Task<ActionResult<AuthWithTokenResDto>> RefreshAccessToken()
     {
@@ -24,6 +26,7 @@ public class TokenController : ControllerBase
         return Ok(newAccessToken);
     }
 
+    [AllowAnonymous]
     [HttpPost("api/v1/revoke", Name = "RevokeToken")]
     public async Task<ActionResult> RevokeToken()
     {

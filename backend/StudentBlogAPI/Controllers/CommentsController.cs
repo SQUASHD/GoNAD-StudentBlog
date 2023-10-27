@@ -8,7 +8,7 @@ using StudentBlogAPI.Utilities;
 
 namespace StudentBlogAPI.Controllers;
 
-[Authorize]
+
 [ApiController]
 [Route("api/v1/[controller]")]
 public class CommentsController : ControllerBase

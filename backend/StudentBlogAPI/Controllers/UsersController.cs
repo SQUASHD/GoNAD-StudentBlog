@@ -8,7 +8,6 @@ using StudentBlogAPI.Utilities;
 
 namespace StudentBlogAPI.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("api/v1/[controller]")]
 public class UsersController : ControllerBase
@@ -59,7 +58,6 @@ public class UsersController : ControllerBase
         return Ok(updatedUser);
     }
 
-    [Authorize]
     [HttpPut("{userId}/password", Name = "UpdateUserPassword")]
     public async Task<ActionResult<UserResDto>> UpdateUserPassword(int userId, UpdatePasswordReqDto resDto)
     {

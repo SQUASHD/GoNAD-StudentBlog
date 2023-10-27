@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudentBlogAPI.Model.DTOs;
 using StudentBlogAPI.Services.Interfaces;
@@ -15,17 +16,25 @@ public class AuthController : ControllerBase
         _authService = authService;
     }
 
+    [AllowAnonymous]
     [HttpPost("login", Name = "Login")]
     public async Task<ActionResult<AuthWithTokenResDto>> Login(UserLoginReqDto userLoginReqDto)
     {
         var authWithTokenResDto = await _authService.LoginAsync(userLoginReqDto);
         return Ok(authWithTokenResDto);
     }
-
+    
+    [AllowAnonymous]
     [HttpPost("register", Name = "Register")]
     public async Task<ActionResult<AuthWithTokenResDto>> Register(UserRegisterReqDto registerReqDto)
     {
         var authWithTokenResDto = await _authService.RegisterAsync(registerReqDto);
         return Ok(authWithTokenResDto);
+    }
+    
+    [HttpHead(Name = "IsAuthorized")]
+    public ActionResult IsAuthorized()
+    {
+        return Ok();
     }
 }

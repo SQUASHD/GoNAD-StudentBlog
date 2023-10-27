@@ -2,6 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -29,7 +30,16 @@ builder.Services.AddDbContext<StudentBlogDbContext>(options =>
         new MySqlServerVersion(new Version(8, 0))));
 
 builder.Services.AddControllers(options =>
-    options.Filters.Add(new ValidationErrorHandlingFilter()));
+{
+    // Adding the ValidationErrorHandlingFilter
+    options.Filters.Add(new ValidationErrorHandlingFilter());
+
+    // Building and adding the global authorization filter
+    var authorizationPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+    options.Filters.Add(new AuthorizeFilter(authorizationPolicy));
+});
 
 builder.Services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
 
