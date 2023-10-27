@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudentBlogAPI.Extensions;
 using StudentBlogAPI.Model.DTOs;
@@ -7,7 +6,6 @@ using StudentBlogAPI.Services.Interfaces;
 using StudentBlogAPI.Utilities;
 
 namespace StudentBlogAPI.Controllers;
-
 
 [ApiController]
 [Route("api/v1/[controller]")]

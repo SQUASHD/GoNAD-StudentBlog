@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudentBlogAPI.Extensions;
 using StudentBlogAPI.Model.DTOs;
@@ -24,7 +23,8 @@ public class PostsController : ControllerBase
     }
 
     [HttpGet(Name = "GetPosts")]
-    public async Task<ActionResult<PaginatedResultDto<PostResDto>>> GetPosts([FromQuery] int page = 1, [FromQuery] int size = 10)
+    public async Task<ActionResult<PaginatedResultDto<PostResDto>>> GetPosts([FromQuery] int page = 1,
+        [FromQuery] int size = 10)
     {
         if (page < 1 || size < 1) return BadRequest("Page and size parameters must be greater than 0");
 

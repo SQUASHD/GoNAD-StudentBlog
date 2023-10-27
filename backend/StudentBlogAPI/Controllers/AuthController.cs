@@ -23,7 +23,7 @@ public class AuthController : ControllerBase
         var authWithTokenResDto = await _authService.LoginAsync(userLoginReqDto);
         return Ok(authWithTokenResDto);
     }
-    
+
     [AllowAnonymous]
     [HttpPost("register", Name = "Register")]
     public async Task<ActionResult<AuthWithTokenResDto>> Register(UserRegisterReqDto registerReqDto)
@@ -31,7 +31,7 @@ public class AuthController : ControllerBase
         var authWithTokenResDto = await _authService.RegisterAsync(registerReqDto);
         return Ok(authWithTokenResDto);
     }
-    
+
     [HttpHead(Name = "IsAuthorized")]
     public ActionResult IsAuthorized()
     {
