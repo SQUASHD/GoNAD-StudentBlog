@@ -4,6 +4,7 @@ using StudentBlogAPI.Extensions;
 using StudentBlogAPI.Model.DTOs;
 using StudentBlogAPI.Model.Internal;
 using StudentBlogAPI.Services.Interfaces;
+using StudentBlogAPI.Utilities;
 
 namespace StudentBlogAPI.Controllers;
 
@@ -23,7 +24,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet(Name = "GetUsers")]
-    public async Task<ActionResult<ICollection<UserResDto>>> GetUsers([FromQuery] int page = 1,
+    public async Task<ActionResult<PaginatedResultDto<UserResDto>>> GetUsers([FromQuery] int page = 1,
         [FromQuery] int size = 10)
     {
         if (page < 1 || size < 1)

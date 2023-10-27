@@ -1,7 +1,3 @@
-type AuthResDto = {
-  id: number;
-  userName: string;
-}
 type AuthWithTokenResDto = {
   id: number;
   userName: string;

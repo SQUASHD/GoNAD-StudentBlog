@@ -2,11 +2,6 @@ type PostInputReqDto = {
   title: string;
   content: string;
 }
-type UpdatePostDto = {
-  userId: number;
-  title: string;
-  content: string;
-}
 type PostResDto = {
   id: number;
   userId: number;

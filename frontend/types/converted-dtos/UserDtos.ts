@@ -7,9 +7,11 @@ type UserResDto = {
   createdAt: string; // Represents a DateTime type in string format
   updatedAt: string; // Represents a DateTime type in string format
 }
-type UpdateUserInputReqDto = {
+type UpdateUserInfoReqDto = {
   firstName: string;
   lastName: string;
-  oldPassword: string;
-  newPassword: string;
+}
+type UpdatePasswordReqDto = {
+  oldPassword: string; // [Required]
+  newPassword: string; // [Required]
 }

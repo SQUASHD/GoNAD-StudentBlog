@@ -93,6 +93,7 @@ builder.Services.AddScoped<IAuthMapper, AuthMapper>();
 // Jwt
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IRevokedTokenRepository, RevokedTokenRepository>();
+builder.Services.AddScoped<ITokenMapper, TokenMapper>();
 
 var app = builder.Build();
 
