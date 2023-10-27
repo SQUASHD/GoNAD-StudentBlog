@@ -1,7 +1,6 @@
 using StudentBlogAPI.Exceptions;
 using StudentBlogAPI.Mappers.Interfaces;
 using StudentBlogAPI.Model.DTOs;
-using StudentBlogAPI.Model.Entities;
 using StudentBlogAPI.Model.Internal;
 using StudentBlogAPI.Repository.Interfaces;
 using StudentBlogAPI.Services.Interfaces;
@@ -11,24 +10,28 @@ namespace StudentBlogAPI.Services;
 public class PostService : IPostService
 {
     private readonly IPostMapper _postMapper;
-    private readonly IRepository<Post> _postRepository;
+    private readonly IPostRepository _postRepository;
 
-    public PostService(IPostMapper postMapper, IRepository<Post> postRepository)
+    public PostService(IPostMapper postMapper, IPostRepository postRepository)
     {
         _postMapper = postMapper;
         _postRepository = postRepository;
     }
 
-    public async Task<ICollection<PostResDto>> GetAllAsync()
+    public async Task<PaginatedResultDto<PostResDto>> GetAllAsync(int pageNumber, int pageSize)
     {
-        var posts = await _postRepository.GetAllAsync();
-        return _postMapper.MapCollection(posts);
+        var (posts, totalPosts) = await _postRepository.GetAllAsync(pageNumber, pageSize);
+        if (posts == null) throw new ItemNotFoundException("Posts not found matching the given criteria");
+        var postsDto = _postMapper.MapCollection(posts);
+
+        return new PaginatedResultDto<PostResDto>(postsDto, pageNumber, pageSize, totalPosts);
     }
 
     public async Task<PostResDto?> GetByIdAsync(int id)
     {
         var post = await _postRepository.GetByIdAsync(id);
-        return post != null ? _postMapper.MapToResDto(post) : null;
+        if (post == null) throw new ItemNotFoundException("Post not found");
+        return _postMapper.MapToResDto(post);
     }
 
     public async Task<PostResDto?> CreateAsync(InternalCreatePostData data)

@@ -7,24 +7,30 @@ using StudentBlogAPI.Services.Interfaces;
 
 namespace StudentBlogAPI.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/v1/[controller]")]
 public class PostsController : ControllerBase
 {
+    private readonly ICommentService _commentService;
     private readonly IJwtService _jwtService;
     private readonly IPostService _postService;
 
-    public PostsController(IPostService postService, IJwtService jwtService)
+    public PostsController(IPostService postService, IJwtService jwtService, ICommentService commentService)
     {
         _postService = postService;
         _jwtService = jwtService;
+        _commentService = commentService;
     }
 
     [HttpGet(Name = "GetPosts")]
-    public async Task<ActionResult<ICollection<PostResDto>>> GetPosts()
+    public async Task<ActionResult<PaginatedResultDto<PostResDto>>> GetPosts([FromQuery] int page = 1,
+        [FromQuery] int size = 10)
     {
-        var posts = await _postService.GetAllAsync();
-        return posts.Any() ? Ok(posts) : NoContent();
+        if (page < 1 || size < 1) return BadRequest("Page and size parameters must be greater than 0");
+
+        var paginatedPosts = await _postService.GetAllAsync(page, size);
+        return Ok(paginatedPosts);
     }
 
     [HttpGet("{postId}", Name = "GetPostById")]
@@ -34,7 +40,6 @@ public class PostsController : ControllerBase
         return Ok(post);
     }
 
-    [Authorize]
     [HttpPost(Name = "CreatePost")]
     public async Task<ActionResult<PostResDto>> CreatePost(PostInputReqDto reqDto)
     {
@@ -51,7 +56,13 @@ public class PostsController : ControllerBase
         return Ok(createdPost);
     }
 
-    [Authorize]
+    [HttpGet("{postId}/comments", Name = "GetCommentsForPost")]
+    public async Task<ActionResult<CommentResDto>> GetCommentByPostId(int postId)
+    {
+        var comments = await _commentService.GetCommentsByPostIdAsync(postId);
+        return Ok(comments);
+    }
+
     [HttpPut("{postId}", Name = "UpdatePost")]
     public async Task<ActionResult<PostResDto>> UpdatePost(int postId, PostInputReqDto reqDto)
     {
@@ -69,7 +80,6 @@ public class PostsController : ControllerBase
         return Ok(updatedPost);
     }
 
-    [Authorize]
     [HttpDelete("{postID}", Name = "DeletePost")]
     public async Task<ActionResult<PostResDto>> DeletePost(int postId)
     {

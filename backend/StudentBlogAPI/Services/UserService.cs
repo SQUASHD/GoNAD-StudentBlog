@@ -9,19 +9,30 @@ namespace StudentBlogAPI.Services;
 
 public class UserService : IUserService
 {
+    private readonly IPostMapper _postMapper;
+    private readonly IPostRepository _postRepository;
     private readonly IUserMapper _userMapper;
     private readonly IUserRepository _userRepository;
 
-    public UserService(IUserMapper userMapper, IUserRepository userRepository)
+    public UserService(IUserMapper userMapper, IUserRepository userRepository, IPostRepository postRepository,
+        IPostMapper postMapper)
     {
         _userMapper = userMapper;
         _userRepository = userRepository;
+        _postRepository = postRepository;
+        _postMapper = postMapper;
     }
 
-    public async Task<ICollection<UserResDto>> GetAllAsync()
+    public async Task<PaginatedResultDto<UserResDto>> GetAllAsync(int pageNumber, int pageSize)
     {
-        var users = await _userRepository.GetAllAsync();
-        return _userMapper.MapCollection(users);
+        var (users, totalUsers) = await _userRepository.GetAllAsync(pageNumber, pageSize);
+
+        if (users == null)
+            throw new ItemNotFoundException("Users not found");
+
+        var userDtos = _userMapper.MapCollection(users);
+
+        return new PaginatedResultDto<UserResDto>(userDtos, pageNumber, pageSize, totalUsers);
     }
 
     public async Task<UserResDto?> GetByIdAsync(int id)
@@ -29,6 +40,13 @@ public class UserService : IUserService
         var user = await _userRepository.GetByIdAsync(id);
         if (user == null) throw new ItemNotFoundException($"User with ID {id} not found.");
         return _userMapper.MapToResDto(user);
+    }
+
+    public async Task<ICollection<PostResDto>> GetPostsByUserIdAsync(int userId)
+    {
+        var posts = await _postRepository.GetPostsByUserIdAsync(userId);
+        if (posts == null) throw new ItemNotFoundException($"No posts by user with {userId}");
+        return _postMapper.MapCollection(posts);
     }
 
     public async Task<UserResDto?> UpdateUserInfoAsync(InternalUpdateUserInfoData data)

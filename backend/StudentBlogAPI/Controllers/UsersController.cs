@@ -7,6 +7,7 @@ using StudentBlogAPI.Services.Interfaces;
 
 namespace StudentBlogAPI.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/v1/[controller]")]
 public class UsersController : ControllerBase
@@ -21,15 +22,18 @@ public class UsersController : ControllerBase
         _jwtService = jwtService;
     }
 
-    [Authorize(Policy = "AdminOnly")]
     [HttpGet(Name = "GetUsers")]
-    public async Task<ActionResult<ICollection<UserResDto>>> GetUsers()
+    public async Task<ActionResult<ICollection<UserResDto>>> GetUsers([FromQuery] int page = 1,
+        [FromQuery] int size = 10)
     {
-        var users = await _userService.GetAllAsync();
-        return users.Any() ? Ok(users) : NoContent();
+        if (page < 1 || size < 1)
+            return BadRequest("Page and size parameters must be greater than 0");
+
+        var paginatedUsers = await _userService.GetAllAsync(page, size);
+
+        return Ok(paginatedUsers);
     }
 
-    [Authorize]
     [HttpGet("{userId}", Name = "GetUserById")]
     public async Task<ActionResult<UserResDto>> GetUserById(int userId)
     {
@@ -37,7 +41,6 @@ public class UsersController : ControllerBase
         return user != null ? Ok(user) : NotFound();
     }
 
-    [Authorize]
     [HttpPut("{userId}", Name = "UpdateUserInfo")]
     public async Task<ActionResult<UserResDto>> UpdateUserInfo(int userId, UpdateUserInfoReqDto resDto)
     {
@@ -73,7 +76,6 @@ public class UsersController : ControllerBase
         return Ok(updatedUser);
     }
 
-    [Authorize]
     [HttpDelete("{userId}", Name = "DeleteUser")]
     public async Task<ActionResult<UserResDto>> DeleteUser(int userId)
     {

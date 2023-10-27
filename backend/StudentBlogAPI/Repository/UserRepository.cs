@@ -14,9 +14,19 @@ public class UserRepository : IUserRepository
         _dbContext = dbContext;
     }
 
-    public async Task<ICollection<User>> GetAllAsync()
+    public async Task<(ICollection<User>, int)> GetAllAsync(int pageNumber, int pageSize)
     {
-        return await _dbContext.Users.ToListAsync();
+        var skip = (pageNumber - 1) * pageSize;
+
+        var users = await _dbContext.Users
+            .OrderBy(u => u.Id)
+            .Skip(skip)
+            .Take(pageSize)
+            .ToListAsync();
+
+        var totalUsers = await _dbContext.Users.CountAsync();
+
+        return (users, totalUsers);
     }
 
 

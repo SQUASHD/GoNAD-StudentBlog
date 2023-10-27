@@ -5,7 +5,7 @@ using StudentBlogAPI.Repository.Interfaces;
 
 namespace StudentBlogAPI.Repository;
 
-public class CommentRepository : IRepository<Comment>
+public class CommentRepository : ICommentRepository
 {
     private readonly StudentBlogDbContext _dbContext;
 
@@ -14,9 +14,26 @@ public class CommentRepository : IRepository<Comment>
         _dbContext = dbContext;
     }
 
-    public async Task<ICollection<Comment>> GetAllAsync()
+    public async Task<(ICollection<Comment>, int)> GetAllAsync(int pageNumber, int pageSize)
     {
-        return await _dbContext.Comments.ToListAsync();
+        var skip = (pageNumber - 1) * pageSize;
+
+        var comments = await _dbContext.Comments
+            .OrderBy(c => c.Id)
+            .Skip(skip)
+            .Take(pageSize)
+            .ToListAsync();
+
+        var totalComments = await _dbContext.Comments.CountAsync();
+
+        return (comments, totalComments);
+    }
+
+    public async Task<ICollection<Comment>> GetCommentsByPostIdAsync(int postId)
+    {
+        var commentsQuery = _dbContext.Comments.Where(c => c.PostId == postId);
+        var comments = await commentsQuery.ToListAsync();
+        return comments;
     }
 
     public async Task<Comment?> GetByIdAsync(int id)

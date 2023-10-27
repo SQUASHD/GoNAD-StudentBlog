@@ -7,8 +7,9 @@ using StudentBlogAPI.Services.Interfaces;
 
 namespace StudentBlogAPI.Controllers;
 
+[Authorize]
 [ApiController]
-[Route("api/v1/")]
+[Route("api/v1/[controller]")]
 public class CommentsController : ControllerBase
 {
     private readonly ICommentService _commentService;
@@ -20,14 +21,17 @@ public class CommentsController : ControllerBase
         _jwtService = jwtService;
     }
 
-    [HttpGet("posts/{postId}/comments")]
-    public async Task<ActionResult<CommentResDto>> GetCommentById(int id)
+    [HttpGet(Name = "GetComments")]
+    public async Task<ActionResult<PaginatedResultDto<PostResDto>>> GetComments([FromQuery] int page = 1,
+        [FromQuery] int size = 10)
     {
-        var comment = await _commentService.GetByIdAsync(id);
-        return comment != null ? Ok(comment) : NotFound();
+        if (page < 1 || size < 1) return BadRequest("Page and size parameters must be greater than 0");
+
+        var paginatedComments = await _commentService.GetAllAsync(page, size);
+        return Ok(paginatedComments);
     }
 
-    [HttpPost("posts/{postId}/comments", Name = "CreateComment")]
+    [HttpPost("{postId}", Name = "CreateComment")]
     public async Task<ActionResult<CommentResDto>> CreateComment(int postId, CommentInputReqDto inputReqDto)
     {
         var currentUserId = this.GetCurrentUserId(_jwtService);
@@ -41,8 +45,7 @@ public class CommentsController : ControllerBase
         return Ok(newComment);
     }
 
-    [Authorize]
-    [HttpPut("comments/{commentId}", Name = "UpdateComment")]
+    [HttpPut("{commentId}", Name = "UpdateComment")]
     public async Task<ActionResult<CommentResDto>> UpdateComment(int commentId, CommentInputReqDto inputReqDto)
     {
         var currentUserId = this.GetCurrentUserId(_jwtService);
@@ -57,8 +60,7 @@ public class CommentsController : ControllerBase
         return Ok(updatedComment);
     }
 
-    [Authorize]
-    [HttpDelete("comments/{commentId}", Name = "DeleteComment")]
+    [HttpDelete("{commentId}", Name = "DeleteComment")]
     public async Task<ActionResult<CommentResDto>> DeleteComment(int commentId)
     {
         var currentUserId = this.GetCurrentUserId(_jwtService);

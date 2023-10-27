@@ -9,7 +9,6 @@ using StudentBlogAPI.Data;
 using StudentBlogAPI.Mappers;
 using StudentBlogAPI.Mappers.Interfaces;
 using StudentBlogAPI.Middleware;
-using StudentBlogAPI.Model.Entities;
 using StudentBlogAPI.Repository;
 using StudentBlogAPI.Repository.Interfaces;
 using StudentBlogAPI.Services;
@@ -80,12 +79,12 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 // Post
 builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<IPostMapper, PostMapper>();
-builder.Services.AddScoped<IRepository<Post>, PostRepository>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
 
 // Comment
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<ICommentMapper, CommentMapper>();
-builder.Services.AddScoped<IRepository<Comment>, CommentRepository>();
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 
 // Auth
 builder.Services.AddScoped<IAuthService, AuthService>();

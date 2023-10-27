@@ -5,7 +5,7 @@ using StudentBlogAPI.Repository.Interfaces;
 
 namespace StudentBlogAPI.Repository;
 
-public class PostRepository : IRepository<Post>
+public class PostRepository : IPostRepository
 {
     private readonly StudentBlogDbContext _dbContext;
 
@@ -14,9 +14,27 @@ public class PostRepository : IRepository<Post>
         _dbContext = dbContext;
     }
 
-    public async Task<ICollection<Post>> GetAllAsync()
+    public async Task<(ICollection<Post>, int)> GetAllAsync(int pageNumber, int pageSize)
     {
-        return await _dbContext.Posts.ToListAsync();
+        var skip = (pageNumber - 1) * pageSize;
+
+        var posts = await _dbContext.Posts
+            .OrderBy(p => p.Id)
+            .Skip(skip)
+            .Take(pageSize)
+            .ToListAsync();
+
+        var totalComments = await _dbContext.Posts.CountAsync();
+
+        return (posts, totalComments);
+        ;
+    }
+
+    public async Task<ICollection<Post>> GetPostsByUserIdAsync(int userId)
+    {
+        var postsQuery = _dbContext.Posts.Where(p => p.UserId == userId);
+        var posts = await postsQuery.ToListAsync();
+        return posts;
     }
 
     public async Task<Post?> GetByIdAsync(int id)

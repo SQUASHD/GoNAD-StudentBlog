@@ -1,7 +1,6 @@
 using StudentBlogAPI.Exceptions;
 using StudentBlogAPI.Mappers.Interfaces;
 using StudentBlogAPI.Model.DTOs;
-using StudentBlogAPI.Model.Entities;
 using StudentBlogAPI.Model.Internal;
 using StudentBlogAPI.Repository.Interfaces;
 using StudentBlogAPI.Services.Interfaces;
@@ -11,19 +10,32 @@ namespace StudentBlogAPI.Services;
 public class CommentService : ICommentService
 {
     private readonly ICommentMapper _commentMapper;
-    private readonly IRepository<Comment> _commentRepository;
+    private readonly ICommentRepository _commentRepository;
 
-    public CommentService(ICommentMapper commentMapper, IRepository<Comment> commentRepository)
+    public CommentService(ICommentMapper commentMapper, ICommentRepository commentRepository)
     {
         _commentMapper = commentMapper;
         _commentRepository = commentRepository;
     }
 
-
-    public async Task<CommentResDto?> GetByIdAsync(int id)
+    public async Task<PaginatedResultDto<CommentResDto>> GetAllAsync(int pageNumber, int pageSize)
     {
-        var comment = await _commentRepository.GetByIdAsync(id);
-        return comment != null ? _commentMapper.MapToResDto(comment) : null;
+        var (comments, totalPosts) = await _commentRepository.GetAllAsync(pageNumber, pageSize);
+
+        if (comments == null)
+            throw new ItemNotFoundException("Comments not found matching the given criteria");
+
+        var commentsDto = _commentMapper.MapCollection(comments);
+
+        return new PaginatedResultDto<CommentResDto>(commentsDto, pageNumber, pageSize, totalPosts);
+    }
+
+    public async Task<ICollection<CommentResDto>> GetCommentsByPostIdAsync(int postId)
+    {
+        var comments = await _commentRepository.GetCommentsByPostIdAsync(postId);
+        if (comments == null) throw new ItemNotFoundException("No comments found for the given post");
+        var commentsDto = _commentMapper.MapCollection(comments);
+        return commentsDto;
     }
 
     public async Task<CommentResDto?> CreateAsync(InternalCreateCommentData data)
@@ -59,5 +71,13 @@ public class CommentService : ICommentService
         var deletedComment = await _commentRepository.DeleteAsync(existingComment);
 
         return _commentMapper.MapToResDto(deletedComment);
+    }
+
+
+    public async Task<CommentResDto?> GetByIdAsync(int id)
+    {
+        var comment = await _commentRepository.GetByIdAsync(id);
+        if (comment == null) throw new ItemNotFoundException();
+        return _commentMapper.MapToResDto(comment);
     }
 }
