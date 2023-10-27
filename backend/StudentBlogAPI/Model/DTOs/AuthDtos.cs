@@ -11,7 +11,7 @@ public record AuthWithTokenResDto(
 );
 
 public record UserRegisterReqDto(
-    [MinLength(3)] [MaxLength(20)] string UserName,
+    [MinLength(3)][MaxLength(20)] string UserName,
     string FirstName,
     string LastName,
     [ValidEmail] string Email,

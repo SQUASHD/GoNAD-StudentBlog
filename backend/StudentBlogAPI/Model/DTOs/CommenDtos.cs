@@ -12,5 +12,5 @@ public record CommentResDto(
 );
 
 public record CommentInputReqDto(
-    [MinLength(6)] [MaxLength(140)] string Content
+    [MinLength(6)][MaxLength(140)] string Content
 );

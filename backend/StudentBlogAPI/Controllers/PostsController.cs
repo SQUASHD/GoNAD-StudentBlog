@@ -12,14 +12,17 @@ namespace StudentBlogAPI.Controllers;
 public class PostsController : ControllerBase
 {
     private readonly ICommentService _commentService;
-    private readonly IJwtService _jwtService;
     private readonly IPostService _postService;
+    private readonly IJwtService _jwtService;
+    private readonly ITokenValidator _tokenValidator;
 
-    public PostsController(IPostService postService, IJwtService jwtService, ICommentService commentService)
+
+    public PostsController(IPostService postService, IJwtService jwtService, ICommentService commentService, ITokenValidator tokenValidator)
     {
         _postService = postService;
         _jwtService = jwtService;
         _commentService = commentService;
+        _tokenValidator = tokenValidator;
     }
 
     [HttpGet(Name = "GetPosts")]
@@ -42,7 +45,7 @@ public class PostsController : ControllerBase
     [HttpPost(Name = "CreatePost")]
     public async Task<ActionResult<PostResDto>> CreatePost(PostInputReqDto reqDto)
     {
-        var currentUserId = this.GetCurrentUserId(_jwtService);
+        var currentUserId = this.GetCurrentUserId(_jwtService, _tokenValidator);
 
         var dto = new InternalCreatePostData(
             currentUserId,
@@ -65,7 +68,7 @@ public class PostsController : ControllerBase
     [HttpPut("{postId}", Name = "UpdatePost")]
     public async Task<ActionResult<PostResDto>> UpdatePost(int postId, PostInputReqDto reqDto)
     {
-        var currentUserId = this.GetCurrentUserId(_jwtService);
+        var currentUserId = this.GetCurrentUserId(_jwtService, _tokenValidator);
 
         var data = new InternalUpdatePostData(
             currentUserId,
@@ -82,7 +85,7 @@ public class PostsController : ControllerBase
     [HttpDelete("{postID}", Name = "DeletePost")]
     public async Task<ActionResult<PostResDto>> DeletePost(int postId)
     {
-        var currentUserId = this.GetCurrentUserId(_jwtService);
+        var currentUserId = this.GetCurrentUserId(_jwtService, _tokenValidator);
 
         var data = new InternalDeletePostData(
             currentUserId,

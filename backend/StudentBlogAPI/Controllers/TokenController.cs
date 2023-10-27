@@ -10,17 +10,19 @@ namespace StudentBlogAPI.Controllers;
 public class TokenController : ControllerBase
 {
     private readonly IJwtService _jwtService;
+    private readonly ITokenValidator _tokenValidator;
 
-    public TokenController(IJwtService jwtService)
+    public TokenController(IJwtService jwtService, ITokenValidator tokenValidator)
     {
         _jwtService = jwtService;
+        _tokenValidator = tokenValidator;
     }
 
     [AllowAnonymous]
     [HttpPost("api/v1/refresh", Name = "RefreshToken")]
     public async Task<ActionResult<AuthWithTokenResDto>> RefreshAccessToken()
     {
-        var userId = this.GetCurrentUserId(_jwtService);
+        var userId = this.GetCurrentUserId(_jwtService, _tokenValidator);
         var refreshToken = _jwtService.GetTokenFromRequest(HttpContext);
         var newAccessToken = await _jwtService.RefreshAccessToken(refreshToken, userId);
         return Ok(newAccessToken);

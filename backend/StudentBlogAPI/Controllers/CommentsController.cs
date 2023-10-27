@@ -13,11 +13,13 @@ public class CommentsController : ControllerBase
 {
     private readonly ICommentService _commentService;
     private readonly IJwtService _jwtService;
+    private readonly ITokenValidator _tokenValidator;
 
-    public CommentsController(ICommentService commentService, IJwtService jwtService)
+    public CommentsController(ICommentService commentService, IJwtService jwtService, ITokenValidator tokenValidator)
     {
         _commentService = commentService;
         _jwtService = jwtService;
+        _tokenValidator = tokenValidator;
     }
 
     [HttpGet(Name = "GetComments")]
@@ -33,7 +35,7 @@ public class CommentsController : ControllerBase
     [HttpPost("{postId}", Name = "CreateComment")]
     public async Task<ActionResult<CommentResDto>> CreateComment(int postId, CommentInputReqDto inputReqDto)
     {
-        var currentUserId = this.GetCurrentUserId(_jwtService);
+        var currentUserId = this.GetCurrentUserId(_jwtService, _tokenValidator);
 
         var dto = new InternalCreateCommentData(
             currentUserId,
@@ -47,7 +49,7 @@ public class CommentsController : ControllerBase
     [HttpPut("{commentId}", Name = "UpdateComment")]
     public async Task<ActionResult<CommentResDto>> UpdateComment(int commentId, CommentInputReqDto inputReqDto)
     {
-        var currentUserId = this.GetCurrentUserId(_jwtService);
+        var currentUserId = this.GetCurrentUserId(_jwtService, _tokenValidator);
 
         var data = new InternalUpdateCommentData(
             currentUserId,
@@ -62,7 +64,7 @@ public class CommentsController : ControllerBase
     [HttpDelete("{commentId}", Name = "DeleteComment")]
     public async Task<ActionResult<CommentResDto>> DeleteComment(int commentId)
     {
-        var currentUserId = this.GetCurrentUserId(_jwtService);
+        var currentUserId = this.GetCurrentUserId(_jwtService, _tokenValidator);
 
         var data = new InternalDeleteCommentData(
             currentUserId,

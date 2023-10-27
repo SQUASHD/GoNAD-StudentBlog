@@ -13,12 +13,14 @@ public class UsersController : ControllerBase
 {
     private readonly IJwtService _jwtService;
     private readonly IUserService _userService;
+    private readonly ITokenValidator _tokenValidator;
 
 
-    public UsersController(IUserService userService, IJwtService jwtService)
+    public UsersController(IUserService userService, IJwtService jwtService, ITokenValidator tokenValidator)
     {
         _userService = userService;
         _jwtService = jwtService;
+        _tokenValidator = tokenValidator;
     }
 
     [HttpGet(Name = "GetUsers")]
@@ -43,7 +45,7 @@ public class UsersController : ControllerBase
     [HttpPut("{userId}", Name = "UpdateUserInfo")]
     public async Task<ActionResult<UserResDto>> UpdateUserInfo(int userId, UpdateUserInfoReqDto resDto)
     {
-        var currentUserId = this.GetCurrentUserId(_jwtService);
+        var currentUserId = this.GetCurrentUserId(_jwtService, _tokenValidator);
 
         var data = new InternalUpdateUserInfoData(
             currentUserId,
@@ -60,7 +62,7 @@ public class UsersController : ControllerBase
     [HttpPut("{userId}/password", Name = "UpdateUserPassword")]
     public async Task<ActionResult<UserResDto>> UpdateUserPassword(int userId, UpdatePasswordReqDto resDto)
     {
-        var currentUserId = this.GetCurrentUserId(_jwtService);
+        var currentUserId = this.GetCurrentUserId(_jwtService, _tokenValidator);
 
         var data = new InternalUpdatePasswordReqData(
             currentUserId,
@@ -77,7 +79,7 @@ public class UsersController : ControllerBase
     [HttpDelete("{userId}", Name = "DeleteUser")]
     public async Task<ActionResult<UserResDto>> DeleteUser(int userId)
     {
-        var currentUserId = this.GetCurrentUserId(_jwtService);
+        var currentUserId = this.GetCurrentUserId(_jwtService, _tokenValidator);
 
         var internalDeleteUserData = new InternalDeleteUserData(
             currentUserId,

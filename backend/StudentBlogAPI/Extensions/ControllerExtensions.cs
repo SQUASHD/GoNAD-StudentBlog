@@ -5,10 +5,9 @@ namespace StudentBlogAPI.Extensions;
 
 public static class ControllerExtensions
 {
-    public static int GetCurrentUserId(this ControllerBase controller, IJwtService jwtService)
+    public static int GetCurrentUserId(this ControllerBase controller, IJwtService jwtService, ITokenValidator tokenValidator)
     {
-        var httpContext = controller.HttpContext;
-        var token = jwtService.GetTokenFromRequest(httpContext);
-        return jwtService.GetUserIdFromToken(token);
+        var token = jwtService.GetTokenFromRequest(controller.HttpContext);
+        return tokenValidator.GetUserIdFromToken(token);
     }
 }
