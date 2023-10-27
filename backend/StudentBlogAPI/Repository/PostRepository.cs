@@ -31,32 +31,17 @@ public class PostRepository : IRepository<Post>
         return entity;
     }
 
-    public async Task<Post?> UpdateAsync(int id, Post entity)
+    public async Task<Post> UpdateAsync(Post entity)
     {
-        try
-        {
-            var existingPost = await _dbContext.Posts.FindAsync(id);
-            if (existingPost == null) return null;
-
-            existingPost.Title = entity.Title;
-            existingPost.Content = entity.Content;
-            existingPost.UpdatedAt = DateTime.UtcNow;
-
-            await _dbContext.SaveChangesAsync();
-            return existingPost;
-        }
-        catch (DbUpdateException ex)
-        {
-            throw new InvalidOperationException("Could not update the post", ex);
-        }
+        _dbContext.Entry(entity).State = EntityState.Modified;
+        await _dbContext.SaveChangesAsync();
+        return entity;
     }
 
-    public async Task<Post?> DeleteAsync(int id)
+    public async Task<Post> DeleteAsync(Post entity)
     {
-        var post = await _dbContext.Posts.FindAsync(id);
-        if (post == null) return null;
-        _dbContext.Posts.Remove(post);
+        _dbContext.Posts.Remove(entity);
         await _dbContext.SaveChangesAsync();
-        return post;
+        return entity;
     }
 }

@@ -5,7 +5,7 @@ namespace StudentBlogAPI.Mappers.Interfaces;
 
 public class TokenMapper : ITokenMapper
 {
-    public RevokedToken DtoToModel(InternalRevokeTokenData dto)
+    public RevokedToken MapToModel(InternalRevokeTokenData dto)
     {
         return new RevokedToken
         {

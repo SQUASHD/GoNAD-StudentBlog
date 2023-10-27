@@ -1,5 +1,4 @@
 using StudentBlogAPI.Mappers.Interfaces;
-using StudentBlogAPI.Model.DTOs;
 using StudentBlogAPI.Model.Entities;
 using StudentBlogAPI.Model.Internal;
 
@@ -7,15 +6,15 @@ namespace StudentBlogAPI.Mappers;
 
 public class AuthMapper : IAuthMapper
 {
-    public AuthResDto MapToDto(User model)
+    public InternalAuthResData MapToDto(User model)
     {
-        return new AuthResDto(
+        return new InternalAuthResData(
             model.Id,
             model.UserName
         );
     }
 
-    public User MapToModel(InternalAuthData dto)
+    public User MapToModel(InternalProcessedAuthData dto)
     {
         return new User
         {

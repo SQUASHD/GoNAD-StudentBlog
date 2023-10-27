@@ -36,34 +36,35 @@ public class PostsController : ControllerBase
 
     [Authorize]
     [HttpPost(Name = "CreatePost")]
-    public async Task<ActionResult<PostResDto>> CreatePost(PostInputReqDto inputReqDto)
+    public async Task<ActionResult<PostResDto>> CreatePost(PostInputReqDto reqDto)
     {
         var currentUserId = this.GetCurrentUserId(_jwtService);
 
         var dto = new InternalCreatePostData(
             currentUserId,
-            inputReqDto.Title,
-            inputReqDto.Content
+            reqDto.Title,
+            reqDto.Content
         );
 
-        var createdPost = await _postService.CreateAsync(currentUserId, dto);
+        var createdPost = await _postService.CreateAsync(dto);
 
         return Ok(createdPost);
     }
 
     [Authorize]
     [HttpPut("{postId}", Name = "UpdatePost")]
-    public async Task<ActionResult<PostResDto>> UpdatePost(int postId, PostInputReqDto inputReqDto)
+    public async Task<ActionResult<PostResDto>> UpdatePost(int postId, PostInputReqDto reqDto)
     {
         var currentUserId = this.GetCurrentUserId(_jwtService);
 
-        var dto = new InternalUpdatePostData(
+        var data = new InternalUpdatePostData(
             currentUserId,
-            inputReqDto.Title,
-            inputReqDto.Content
+            postId,
+            reqDto.Title,
+            reqDto.Content
         );
 
-        var updatedPost = await _postService.UpdateAsync(currentUserId, postId, dto);
+        var updatedPost = await _postService.UpdateAsync(data);
 
         return Ok(updatedPost);
     }
@@ -74,7 +75,12 @@ public class PostsController : ControllerBase
     {
         var currentUserId = this.GetCurrentUserId(_jwtService);
 
-        var deletedPost = await _postService.DeleteAsync(currentUserId, postId);
+        var data = new InternalDeletePostData(
+            currentUserId,
+            postId
+        );
+
+        var deletedPost = await _postService.DeleteAsync(data);
 
         return Ok(deletedPost);
     }

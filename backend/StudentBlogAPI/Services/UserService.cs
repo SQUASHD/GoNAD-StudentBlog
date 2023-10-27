@@ -27,53 +27,74 @@ public class UserService : IUserService
     public async Task<UserResDto?> GetByIdAsync(int id)
     {
         var user = await _userRepository.GetByIdAsync(id);
-        return user != null ? _userMapper.MapToDto(user) : null;
+        if (user == null) throw new ItemNotFoundException($"User with ID {id} not found.");
+        return _userMapper.MapToResDto(user);
     }
 
-    public async Task<UserResDto?> UpdateAsync(int currentUserId, int id, UpdateUserInputReqDto inputReqDto)
+    public async Task<UserResDto?> UpdateUserInfoAsync(InternalUpdateUserInfoData data)
     {
-        var userToUpdate = await _userRepository.GetByIdAsync(id);
+        var userToUpdate = await _userRepository.GetByIdAsync(data.UserToUpdateId);
         if (userToUpdate == null) throw new ItemNotFoundException("The requested user was not found");
 
-        if (userToUpdate.Id != currentUserId || !userToUpdate.IsAdmin) throw new UserForbiddenException();
-        var newSalt = BCrypt.Net.BCrypt.GenerateSalt();
+        if (userToUpdate.Id != data.CurrentUserId) throw new UserForbiddenException();
+
+        userToUpdate.FirstName = data.FirstName;
+        userToUpdate.LastName = data.LastName;
+
+        var user = await _userRepository.UpdateAsync(userToUpdate);
+
+        var updatedUserResDto = _userMapper.MapToResDto(user);
+
+        return updatedUserResDto;
+    }
+
+    public async Task<UserResDto?> UpdatePasswordAsync(InternalUpdatePasswordReqData data)
+    {
+        var userToUpdate = await _userRepository.GetByIdAsync(data.UserToUpdateId);
+        if (userToUpdate == null) throw new ItemNotFoundException("The requested user was not found");
+
+        if (userToUpdate.Id != data.CurrentUserId || !userToUpdate.IsAdmin) throw new UserForbiddenException();
+
         var oldSalt = userToUpdate.Salt;
-        var hashedOldPassword = BCrypt.Net.BCrypt.HashPassword(inputReqDto.OldPassword, oldSalt);
+        var hashedOldPassword = BCrypt.Net.BCrypt.HashPassword(data.OldPassword, oldSalt);
 
         if (hashedOldPassword != userToUpdate.HashedPassword)
-            throw new PasswordMismatchException("Old password does not match");
+            throw new PasswordMismatchException("Passwords do not match");
 
-        var newHashedPassword = BCrypt.Net.BCrypt.HashPassword(inputReqDto.NewPassword, newSalt);
+        var newSalt = BCrypt.Net.BCrypt.GenerateSalt();
+        var newHashedPassword = BCrypt.Net.BCrypt.HashPassword(data.NewPassword, newSalt);
 
-        var updateUserData = new InternalUpdateUserData(
-            userToUpdate.Id,
-            inputReqDto.FirstName,
-            inputReqDto.LastName,
+        var processedData = new InternalProcessedUpdatePasswordData(
             newHashedPassword,
             newSalt
         );
 
-        userToUpdate = _userMapper.MapUpdateToModel(updateUserData);
+        userToUpdate.HashedPassword = processedData.HashedNewPassword;
+        userToUpdate.Salt = processedData.NewSalt;
 
-        var updatedUser = await _userRepository.UpdateAsync(id, userToUpdate);
-        return updatedUser != null ? _userMapper.MapToDto(updatedUser) : null;
+        var user = await _userRepository.UpdateAsync(userToUpdate);
+
+        var updatedUserRestDto = _userMapper.MapToResDto(user);
+
+        return updatedUserRestDto;
     }
 
-    public async Task<UserResDto?> DeleteAsync(int currentUserId, int userIdToDelete)
+    public async Task<UserResDto?> DeleteAsync(InternalDeleteUserData data)
     {
-        var currentUser = await _userRepository.GetByIdAsync(currentUserId);
+        var currentUser = await _userRepository.GetByIdAsync(data.CurrentUserId);
+        var userToDelete = await _userRepository.GetByIdAsync(data.UserToDeleteId);
+
         if (currentUser == null) throw new UserNotAuthorizedException();
+        if (userToDelete == null) throw new ItemNotFoundException($"User with ID {data.UserToDeleteId} not found.");
 
         var isAuthorizedToDelete =
             currentUser.IsAdmin ||
-            currentUser.Id == userIdToDelete;
+            currentUser.Id == userToDelete.Id;
 
-        if (!isAuthorizedToDelete)
-            throw new UserForbiddenException();
+        if (!isAuthorizedToDelete) throw new UserForbiddenException();
 
-        var userToDelete = await _userRepository.DeleteAsync(userIdToDelete);
-        if (userToDelete == null) throw new ItemNotFoundException($"User with ID {userIdToDelete} not found.");
+        var deletedUser = await _userRepository.DeleteAsync(userToDelete);
 
-        return _userMapper.MapToDto(userToDelete);
+        return _userMapper.MapToResDto(deletedUser);
     }
 }

@@ -1,13 +1,19 @@
 namespace StudentBlogAPI.Model.Internal;
 
-public record InternalUpdatePostData(
-    int UserId,
+public record InternalCreatePostData(
+    int CurrentUserId,
     string Title,
     string Content
 );
 
-public record InternalCreatePostData(
-    int UserId,
+public record InternalUpdatePostData(
+    int CurrenUserId,
+    int PostId,
     string Title,
     string Content
+);
+
+public record InternalDeletePostData(
+    int PostId,
+    int UserId
 );

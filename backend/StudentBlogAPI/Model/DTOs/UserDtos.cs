@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace StudentBlogAPI.Model.DTOs;
 
 public record UserResDto(
@@ -10,9 +12,12 @@ public record UserResDto(
     DateTime UpdatedAt
 );
 
-public record UpdateUserInputReqDto(
+public record UpdateUserInfoReqDto(
     string FirstName,
-    string LastName,
-    string OldPassword,
-    string NewPassword
+    string LastName
+);
+
+public record UpdatePasswordReqDto(
+    [Required] string OldPassword,
+    [Required] string NewPassword
 );

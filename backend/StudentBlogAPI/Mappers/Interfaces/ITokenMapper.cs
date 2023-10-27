@@ -5,5 +5,5 @@ namespace StudentBlogAPI.Mappers.Interfaces;
 
 public interface ITokenMapper
 {
-    RevokedToken DtoToModel(InternalRevokeTokenData dto);
+    RevokedToken MapToModel(InternalRevokeTokenData dto);
 }

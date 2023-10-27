@@ -5,42 +5,32 @@ using StudentBlogAPI.Model.Internal;
 
 namespace StudentBlogAPI.Mappers;
 
-public class CommentMapper : ICommentMapper
+internal class CommentMapper : ICommentMapper
 {
-    public CommentResDto MapToDto(Comment model)
+    public CommentResDto MapToResDto(Comment entity)
     {
         return new CommentResDto(
-            model.Id,
-            model.PostId,
-            model.UserId,
-            model.Content,
-            model.CreatedAt,
-            model.UpdatedAt
+            entity.Id,
+            entity.PostId,
+            entity.UserId,
+            entity.Content,
+            entity.CreatedAt,
+            entity.UpdatedAt
         );
     }
 
-    public Comment MapCreateToModel(InternalCreateCommentData data)
+    public Comment MapToModel(InternalCreateCommentData createData)
     {
         return new Comment
         {
-            PostId = data.PostId,
-            UserId = data.UserId,
-            Content = data.Content
+            PostId = createData.PostId,
+            UserId = createData.CurrentUserId,
+            Content = createData.Content
         };
     }
 
-    public Comment MapUpdateToModel(InternalUpdateCommentData data)
+    public ICollection<CommentResDto> MapCollection(ICollection<Comment> entities)
     {
-        return new Comment
-        {
-            Id = data.Id,
-            UserId = data.UserId,
-            Content = data.Content
-        };
-    }
-
-    public ICollection<CommentResDto> MapCollection(ICollection<Comment> models)
-    {
-        return models.Select(model => MapToDto(model)).ToList();
+        return entities.Select(MapToResDto).ToList();
     }
 }

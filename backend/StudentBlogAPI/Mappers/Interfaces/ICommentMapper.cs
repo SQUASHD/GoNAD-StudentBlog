@@ -6,8 +6,7 @@ namespace StudentBlogAPI.Mappers.Interfaces;
 
 public interface ICommentMapper
 {
-    CommentResDto MapToDto(Comment model);
-    Comment MapCreateToModel(InternalCreateCommentData data);
-    Comment MapUpdateToModel(InternalUpdateCommentData data);
+    CommentResDto MapToResDto(Comment entity);
+    Comment MapToModel(InternalCreateCommentData data);
     ICollection<CommentResDto> MapCollection(ICollection<Comment> models);
 }

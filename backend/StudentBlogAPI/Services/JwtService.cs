@@ -126,7 +126,7 @@ public class JwtService : IJwtService
             token,
             userId
         );
-        var revokedTokenData = _tokenMapper.DtoToModel(internalData);
+        var revokedTokenData = _tokenMapper.MapToModel(internalData);
         var isRevoked = await _tokenRepository.RevokeToken(revokedTokenData);
         return isRevoked;
     }

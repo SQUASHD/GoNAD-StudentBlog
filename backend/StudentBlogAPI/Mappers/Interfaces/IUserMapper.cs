@@ -6,7 +6,8 @@ namespace StudentBlogAPI.Mappers.Interfaces;
 
 public interface IUserMapper
 {
-    UserResDto MapToDto(User user);
-    User MapUpdateToModel(InternalUpdateUserData internalUpdateUserData);
+    UserResDto MapToResDto(User user);
+    User MapToModel(InternalProcessedAuthData createData);
+
     ICollection<UserResDto> MapCollection(ICollection<User> models);
 }

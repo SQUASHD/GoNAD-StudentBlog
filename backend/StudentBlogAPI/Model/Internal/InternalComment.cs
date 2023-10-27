@@ -1,13 +1,18 @@
 namespace StudentBlogAPI.Model.Internal;
 
 public record InternalCreateCommentData(
+    int CurrentUserId,
     int PostId,
-    int UserId,
     string Content
 );
 
 public record InternalUpdateCommentData(
-    int Id,
-    int UserId,
+    int CurrentUserId,
+    int CommentId,
     string Content
+);
+
+public record InternalDeleteCommentData(
+    int CurrentUserId,
+    int CommentId
 );

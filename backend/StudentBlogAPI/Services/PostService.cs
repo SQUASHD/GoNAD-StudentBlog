@@ -28,34 +28,40 @@ public class PostService : IPostService
     public async Task<PostResDto?> GetByIdAsync(int id)
     {
         var post = await _postRepository.GetByIdAsync(id);
-        return post != null ? _postMapper.MapToDto(post) : null;
+        return post != null ? _postMapper.MapToResDto(post) : null;
     }
 
-    public async Task<PostResDto?> CreateAsync(int userId, InternalCreatePostData data)
+    public async Task<PostResDto?> CreateAsync(InternalCreatePostData data)
     {
-        var post = _postMapper.MapCreateToModel(data);
+        var post = _postMapper.MapToModel(data);
         var createdPost = await _postRepository.CreateAsync(post);
-        return _postMapper.MapToDto(createdPost);
+        return _postMapper.MapToResDto(createdPost);
     }
 
-    public async Task<PostResDto?> UpdateAsync(int userId, int id, InternalUpdatePostData data)
+    public async Task<PostResDto?> UpdateAsync(InternalUpdatePostData data)
     {
-        var existingPost = await _postRepository.GetByIdAsync(id);
+        var existingPost = await _postRepository.GetByIdAsync(data.PostId);
         if (existingPost == null) throw new ItemNotFoundException("Post not found");
-        if (existingPost.UserId != userId) throw new UserForbiddenException();
+        if (existingPost.UserId != data.CurrenUserId) throw new UserForbiddenException();
 
-        var post = _postMapper.MapUpdateToModel(data);
-        post.UserId = userId;
-        var updatedPost = await _postRepository.UpdateAsync(id, post);
-        return updatedPost != null ? _postMapper.MapToDto(updatedPost) : null;
+        existingPost.Title = data.Title;
+        existingPost.Content = data.Content;
+        existingPost.UpdatedAt = DateTime.Now;
+
+        var updatedPost = await _postRepository.UpdateAsync(existingPost);
+
+        return _postMapper.MapToResDto(updatedPost);
     }
 
-    public async Task<PostResDto?> DeleteAsync(int userId, int id)
+    public async Task<PostResDto?> DeleteAsync(InternalDeletePostData data)
     {
-        var existingPost = await _postRepository.GetByIdAsync(id);
+        var existingPost = await _postRepository.GetByIdAsync(data.PostId);
+
         if (existingPost == null) throw new ItemNotFoundException("Post not found");
-        if (existingPost.UserId != userId) throw new UserForbiddenException();
-        var deletedPost = await _postRepository.DeleteAsync(id);
-        return deletedPost != null ? _postMapper.MapToDto(deletedPost) : null;
+        if (existingPost.UserId != data.UserId) throw new UserForbiddenException();
+
+        var deletedPost = await _postRepository.DeleteAsync(existingPost);
+
+        return _postMapper.MapToResDto(deletedPost);
     }
 }

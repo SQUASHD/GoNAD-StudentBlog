@@ -7,7 +7,7 @@ namespace StudentBlogAPI.Mappers;
 
 public class UserMapper : IUserMapper
 {
-    public UserResDto MapToDto(User user)
+    public UserResDto MapToResDto(User user)
     {
         return new UserResDto(
             user.Id,
@@ -20,20 +20,21 @@ public class UserMapper : IUserMapper
         );
     }
 
-    public User MapUpdateToModel(InternalUpdateUserData data)
+    public User MapToModel(InternalProcessedAuthData createData)
     {
         return new User
         {
-            FirstName = data.FirstName,
-            LastName = data.LastName,
-            HashedPassword = data.HashedNewPassword,
-            Salt = data.NewSalt
+            UserName = createData.UserName,
+            FirstName = createData.FirstName,
+            LastName = createData.LastName,
+            Email = createData.Email,
+            HashedPassword = createData.HashedPassword,
+            Salt = createData.Salt
         };
     }
 
-
     public ICollection<UserResDto> MapCollection(ICollection<User> models)
     {
-        return models.Select(MapToDto).ToList();
+        return models.Select(MapToResDto).ToList();
     }
 }

@@ -32,25 +32,18 @@ public class UserRepository : IUserRepository
         return entity;
     }
 
-    public async Task<User?> UpdateAsync(int id, User entity)
+    public async Task<User> UpdateAsync(User entity)
     {
-        var existingUser = await _dbContext.Users.FindAsync(id);
-        if (existingUser == null) return null;
-
-        existingUser = entity;
-        existingUser.UpdatedAt = DateTime.UtcNow;
-
+        _dbContext.Entry(entity).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
-        return existingUser;
+        return entity;
     }
 
-    public async Task<User?> DeleteAsync(int id)
+    public async Task<User> DeleteAsync(User entity)
     {
-        var user = await _dbContext.Users.FindAsync(id);
-        if (user == null) return null;
-        _dbContext.Users.Remove(user);
+        _dbContext.Users.Remove(entity);
         await _dbContext.SaveChangesAsync();
-        return user;
+        return entity;
     }
 
     public async Task<User?> GetByUsernameAsync(string username)

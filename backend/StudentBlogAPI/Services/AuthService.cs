@@ -29,7 +29,7 @@ public class AuthService : IAuthService
         var salt = BCrypt.Net.BCrypt.GenerateSalt();
         var hashedPassword = BCrypt.Net.BCrypt.HashPassword(reqDto.Password, salt);
 
-        var authCreateData = new InternalAuthData(
+        var authCreateData = new InternalProcessedAuthData(
             reqDto.UserName,
             reqDto.FirstName,
             reqDto.LastName,

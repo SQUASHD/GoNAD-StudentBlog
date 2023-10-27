@@ -7,7 +7,7 @@ namespace StudentBlogAPI.Mappers;
 
 public class PostMapper : IPostMapper
 {
-    public PostResDto MapToDto(Post model)
+    public PostResDto MapToResDto(Post model)
     {
         return new PostResDto(
             model.Id,
@@ -19,21 +19,11 @@ public class PostMapper : IPostMapper
         );
     }
 
-    public Post MapCreateToModel(InternalCreatePostData data)
+    public Post MapToModel(InternalCreatePostData data)
     {
         return new Post
         {
-            UserId = data.UserId,
-            Title = data.Title,
-            Content = data.Content
-        };
-    }
-
-    public Post MapUpdateToModel(InternalUpdatePostData data)
-    {
-        return new Post
-        {
-            UserId = data.UserId,
+            UserId = data.CurrentUserId,
             Title = data.Title,
             Content = data.Content
         };
@@ -41,6 +31,16 @@ public class PostMapper : IPostMapper
 
     public ICollection<PostResDto> MapCollection(ICollection<Post> models)
     {
-        return models.Select(MapToDto).ToList();
+        return models.Select(MapToResDto).ToList();
+    }
+
+    public Post MapUpdateToModel(InternalUpdatePostData data)
+    {
+        return new Post
+        {
+            UserId = data.CurrenUserId,
+            Title = data.Title,
+            Content = data.Content
+        };
     }
 }

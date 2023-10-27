@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudentBlogAPI.Extensions;
 using StudentBlogAPI.Model.DTOs;
+using StudentBlogAPI.Model.Internal;
 using StudentBlogAPI.Services.Interfaces;
 
 namespace StudentBlogAPI.Controllers;
@@ -37,13 +38,39 @@ public class UsersController : ControllerBase
     }
 
     [Authorize]
-    [HttpPut("{userId}", Name = "UpdateUser")]
-    public async Task<ActionResult<UserResDto>> UpdateUser(int userId, UpdateUserInputReqDto resDto)
+    [HttpPut("{userId}", Name = "UpdateUserInfo")]
+    public async Task<ActionResult<UserResDto>> UpdateUserInfo(int userId, UpdateUserInfoReqDto resDto)
     {
         var currentUserId = this.GetCurrentUserId(_jwtService);
-        var updatedUser = await _userService.UpdateAsync(currentUserId, userId, resDto);
 
-        return updatedUser != null ? Ok(updatedUser) : NotFound();
+        var data = new InternalUpdateUserInfoData(
+            currentUserId,
+            userId,
+            resDto.FirstName,
+            resDto.LastName
+        );
+
+        var updatedUser = await _userService.UpdateUserInfoAsync(data);
+
+        return Ok(updatedUser);
+    }
+
+    [Authorize]
+    [HttpPut("{userId}/password", Name = "UpdateUserPassword")]
+    public async Task<ActionResult<UserResDto>> UpdateUserPassword(int userId, UpdatePasswordReqDto resDto)
+    {
+        var currentUserId = this.GetCurrentUserId(_jwtService);
+
+        var data = new InternalUpdatePasswordReqData(
+            currentUserId,
+            userId,
+            resDto.OldPassword,
+            resDto.NewPassword
+        );
+
+        var updatedUser = await _userService.UpdatePasswordAsync(data);
+
+        return Ok(updatedUser);
     }
 
     [Authorize]
@@ -51,7 +78,13 @@ public class UsersController : ControllerBase
     public async Task<ActionResult<UserResDto>> DeleteUser(int userId)
     {
         var currentUserId = this.GetCurrentUserId(_jwtService);
-        var deletedUser = await _userService.DeleteAsync(currentUserId, userId);
+
+        var internalDeleteUserData = new InternalDeleteUserData(
+            currentUserId,
+            userId
+        );
+
+        var deletedUser = await _userService.DeleteAsync(internalDeleteUserData);
 
         return Ok(deletedUser);
     }

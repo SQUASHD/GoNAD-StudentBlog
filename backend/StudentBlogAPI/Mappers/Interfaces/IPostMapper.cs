@@ -6,9 +6,8 @@ namespace StudentBlogAPI.Mappers.Interfaces;
 
 public interface IPostMapper
 {
-    PostResDto MapToDto(Post model);
+    PostResDto MapToResDto(Post model);
 
-    Post MapCreateToModel(InternalCreatePostData data);
-    Post MapUpdateToModel(InternalUpdatePostData data);
+    Post MapToModel(InternalCreatePostData data);
     ICollection<PostResDto> MapCollection(ICollection<Post> models);
 }

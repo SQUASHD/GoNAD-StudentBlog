@@ -31,24 +31,17 @@ public class CommentRepository : IRepository<Comment>
         return entity;
     }
 
-    public async Task<Comment?> UpdateAsync(int id, Comment entity)
+    public async Task<Comment> UpdateAsync(Comment entity)
     {
-        var existingComment = await _dbContext.Comments.FindAsync(id);
-        if (existingComment == null) return null;
-
-        existingComment.Content = entity.Content;
-        existingComment.UpdatedAt = DateTime.UtcNow;
-
+        _dbContext.Entry(entity).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
-        return existingComment;
+        return entity;
     }
 
-    public async Task<Comment?> DeleteAsync(int id)
+    public async Task<Comment> DeleteAsync(Comment entity)
     {
-        var comment = await _dbContext.Comments.FindAsync(id);
-        if (comment == null) return null;
-        _dbContext.Comments.Remove(comment);
+        _dbContext.Comments.Remove(entity);
         await _dbContext.SaveChangesAsync();
-        return comment;
+        return entity;
     }
 }

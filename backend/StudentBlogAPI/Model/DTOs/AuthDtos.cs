@@ -3,11 +3,6 @@ using StudentBlogAPI.Validation.UserValidator;
 
 namespace StudentBlogAPI.Model.DTOs;
 
-public record AuthResDto(
-    int Id,
-    string UserName
-);
-
 public record AuthWithTokenResDto(
     int Id,
     string UserName,

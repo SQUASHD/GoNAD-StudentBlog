@@ -23,36 +23,41 @@ public class CommentService : ICommentService
     public async Task<CommentResDto?> GetByIdAsync(int id)
     {
         var comment = await _commentRepository.GetByIdAsync(id);
-        return comment != null ? _commentMapper.MapToDto(comment) : null;
+        return comment != null ? _commentMapper.MapToResDto(comment) : null;
     }
 
     public async Task<CommentResDto?> CreateAsync(InternalCreateCommentData data)
     {
-        var comment = _commentMapper.MapCreateToModel(data);
+        var comment = _commentMapper.MapToModel(data);
         var createdComment = await _commentRepository.CreateAsync(comment);
-        return _commentMapper.MapToDto(createdComment);
+        return _commentMapper.MapToResDto(createdComment);
     }
 
-    public async Task<CommentResDto?> UpdateAsync(int currentUserId, int id, InternalUpdateCommentData data)
+    public async Task<CommentResDto?> UpdateAsync(InternalUpdateCommentData data)
     {
-        var existingComment = await _commentRepository.GetByIdAsync(id);
+        var existingComment = await _commentRepository.GetByIdAsync(data.CommentId);
         if (existingComment == null) throw new ItemNotFoundException();
+        if (existingComment.UserId != data.CurrentUserId) throw new UserForbiddenException();
 
-        if (existingComment.UserId != currentUserId) throw new UserForbiddenException();
+        existingComment.Content = data.Content;
+        existingComment.UpdatedAt = DateTime.Now;
 
-        var comment = _commentMapper.MapUpdateToModel(data);
-        var updatedComment = await _commentRepository.UpdateAsync(id, comment);
-        return updatedComment != null ? _commentMapper.MapToDto(updatedComment) : null;
+        var comment = await _commentRepository.UpdateAsync(existingComment);
+
+        var updatedComment = _commentMapper.MapToResDto(comment);
+
+        return updatedComment;
     }
 
-    public async Task<CommentResDto?> DeleteAsync(int currentUserId, int id)
+    public async Task<CommentResDto?> DeleteAsync(InternalDeleteCommentData data)
     {
-        var existingComment = await _commentRepository.GetByIdAsync(id);
+        var existingComment = await _commentRepository.GetByIdAsync(data.CommentId);
+
         if (existingComment == null) throw new ItemNotFoundException();
+        if (existingComment.UserId != data.CurrentUserId) throw new UserForbiddenException();
 
-        if (existingComment.UserId != currentUserId) throw new UserForbiddenException();
+        var deletedComment = await _commentRepository.DeleteAsync(existingComment);
 
-        var deletedComment = await _commentRepository.DeleteAsync(id);
-        return deletedComment != null ? _commentMapper.MapToDto(deletedComment) : null;
+        return _commentMapper.MapToResDto(deletedComment);
     }
 }
