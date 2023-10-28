@@ -1,4 +1,4 @@
-type PaginatedResultDto<T> = {
+export type PaginatedResultDto<T> = {
   items: T[];
   currentPage: number;
   pageSize: number;

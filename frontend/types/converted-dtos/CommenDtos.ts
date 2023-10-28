@@ -1,4 +1,4 @@
-type CommentResDto = {
+export type CommentResDto = {
   id: number;
   postId: number;
   userId: number;
@@ -6,6 +6,6 @@ type CommentResDto = {
   createdAt: string; // Represents a DateTime type in string format
   updatedAt: string; // Represents a DateTime type in string format
 }
-type CommentInputReqDto = {
+export type CommentInputReqDto = {
   content: string;
 }

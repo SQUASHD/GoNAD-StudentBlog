@@ -1,65 +1,71 @@
 "use server";
 
 import { env } from "@/env.mjs";
+import {
+  removeAccessToken,
+  removeRefreshToken,
+  setAccessToken,
+  setRefreshToken,
+} from "@/lib/auth";
+import {
+  AuthWithTokenResDto,
+  UserLoginReqDto,
+  UserRegisterReqDto,
+} from "@/types/converted-dtos/AuthDtos";
+import logError from "./logger";
 import { typedFetch } from "@/lib/fetch";
-import { cookies } from "next/headers";
 
-export type LoginData = {
-  username: string;
-  password: string;
-};
+export async function loginUser(req: UserLoginReqDto) {
+  let loginRes: AuthWithTokenResDto;
+  try {
+    loginRes = await typedFetch<AuthWithTokenResDto>(
+      `${env.NEXT_PUBLIC_API_URL}/Auth/login`,
+      {
+        cache: "no-cache",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userName: req.userName,
+          password: req.password,
+        } satisfies UserLoginReqDto),
+      }
+    );
+    setAccessToken(loginRes.accessToken);
+    setRefreshToken(loginRes.refreshToken);
 
-export type LoginResponse = {
-  id: number;
-  username: string;
-  token: string;
-  refreshToken: string;
-};
-
-export async function loginUser({ username, password }: LoginData) {
-  const res = await typedFetch<LoginResponse>(
-    `${env.NEXT_PUBLIC_API_URL}/auth/login`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: username,
-        password: password,
-      }),
-    }
-  );
-
-  cookies().set({
-    name: "access_token",
-    value: res.token,
-    httpOnly: true,
-  });
-
-  cookies().set({
-    name: "refresh_token",
-    value: res.refreshToken,
-    httpOnly: true,
-  });
-
-  return res;
+    console.log(loginRes);
+    return loginRes;
+  } catch (error) {
+    logError({ message: "Error logging in user" }, "critical");
+    throw error;
+  }
 }
 
-export async function logoutUser() {
-  const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/auth/logout`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      username: "hjartland",
-      password: "testing123",
-    }),
-  });
+export async function registerUser(authReq: UserRegisterReqDto) {
+  let authRes: AuthWithTokenResDto;
+  try {
+    authRes = await typedFetch<AuthWithTokenResDto>(
+      `${env.NEXT_PUBLIC_API_URL}/auth/register`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(authReq),
+      }
+    );
+    // Make sure to remove any existing tokens before setting the new ones
+    removeAccessToken();
+    removeRefreshToken();
 
-  if (!response.ok) {
-    console.log(response);
+    setAccessToken(authRes.accessToken);
+    setRefreshToken(authRes.refreshToken);
+
+    return authRes;
+  } catch (error) {
+    logError({ message: "Error registering user" }, "critical");
+    throw error;
   }
-  cookies().delete("access_token");
 }

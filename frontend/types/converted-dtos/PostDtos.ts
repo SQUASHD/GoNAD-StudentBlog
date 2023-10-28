@@ -1,8 +1,8 @@
-type PostInputReqDto = {
+export type PostInputReqDto = {
   title: string;
   content: string;
 }
-type PostResDto = {
+export type PostResDto = {
   id: number;
   userId: number;
   title: string;

@@ -1,17 +1,17 @@
-type AuthWithTokenResDto = {
+export type AuthWithTokenResDto = {
   id: number;
   userName: string;
   accessToken: string;
   refreshToken: string;
 }
-type UserRegisterReqDto = {
+export type UserRegisterReqDto = {
   userName: string;
   firstName: string;
   lastName: string;
   email: string; // [ValidEmail]
   password: string;
 }
-type UserLoginReqDto = {
+export type UserLoginReqDto = {
   userName: string;
   password: string;
 }

@@ -1,6 +1,6 @@
-type AccessTokenResDto = {
+export type AccessTokenResDto = {
   token: string;
 }
-type RefreshTokenResDto = {
+export type RefreshTokenResDto = {
   refreshToken: string;
 }

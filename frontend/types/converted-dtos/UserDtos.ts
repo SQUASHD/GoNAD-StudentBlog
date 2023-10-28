@@ -1,4 +1,4 @@
-type UserResDto = {
+export type UserResDto = {
   id: number;
   userName: string;
   firstName: string;
@@ -7,11 +7,11 @@ type UserResDto = {
   createdAt: string; // Represents a DateTime type in string format
   updatedAt: string; // Represents a DateTime type in string format
 }
-type UpdateUserInfoReqDto = {
+export type UpdateUserInfoReqDto = {
   firstName: string;
   lastName: string;
 }
-type UpdatePasswordReqDto = {
+export type UpdatePasswordReqDto = {
   oldPassword: string; // [Required]
   newPassword: string; // [Required]
 }
