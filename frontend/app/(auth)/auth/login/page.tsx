@@ -1,41 +1,36 @@
 import { Metadata } from "next";
-import { loginUser } from "@/app/_actions/auth";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { redirect } from "next/navigation";
 import { Label } from "@/components/ui/label";
-import { UserLoginReqDto } from "@/types/converted-dtos/AuthDtos";
+import { LoginForm } from "@/components/auth/auth-forms";
+import { userIsSignedIn } from "@/lib/auth/";
+import Link from "next/link";
+import { signOutUser } from "@/app/_actions/auth";
 
 export const metadata: Metadata = {
-  title: "Authentication",
+  title: "Student Blog | Login",
   description: "Authentication forms built using the components.",
 };
 
-export default function LoginPage() {
-  async function handleSubmit(data: FormData) {
-    "use server";
-    const username = data.get("username");
-    const password = data.get("password");
+export default async function LoginPage() {
+  const signedIn = await userIsSignedIn();
 
-    if (username && password) {
-      const req: UserLoginReqDto = {
-        userName: username.toString(),
-        password: password.toString(),
-      };
-
-      const res = await loginUser(req);
-      if (res) {
-        redirect("/");
-      }
-    }
+  if (signedIn) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full">
+        <h1 className="text-5xl font-bold tracking-tighter">
+          Congratulations!
+        </h1>
+        <p className="pb-4">You are already signed in</p>
+        <div className="flex gap-2">
+          <Button asChild>
+            <Link href="/blog">To Blog</Link>
+          </Button>
+          <form action={signOutUser}>
+            <Button type="submit">Sign out</Button>
+          </form>
+        </div>
+      </div>
+    );
   }
-
-  return (
-    <form action={handleSubmit}>
-      <Label>Username</Label>
-      <Input name="username" type="text" />
-      <Input name="password" type="password" />
-      <Button type="submit">Login</Button>
-    </form>
-  );
+  return <LoginForm />;
 }
