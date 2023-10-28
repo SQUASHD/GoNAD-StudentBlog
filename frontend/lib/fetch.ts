@@ -1,22 +1,37 @@
-import { cookies } from "next/headers";
+import logError from "@/app/_actions/logger";
+import { env } from "@/env.mjs";
+import { getAccessToken } from "@/lib/auth/tokens";
+import { redirect } from "next/navigation";
+;
 
 type FetchOptions = {
   method?: "GET" | "POST" | "PUT" | "DELETE";
+  cache?: "no-cache" | "force-cache" | "no-store";
   headers?: Record<string, string>;
+  revalidate?: false | 0 | number;
   body?: any;
 };
 
-async function fetchWithAccessToken(endpoint: string, options?: FetchOptions) {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}${endpoint}`;
+export type ApiErrorResponse = {
+  statusCode: string;
+  message: string;
+};
 
-  const cookieStore = cookies();
-  const accessToken = cookieStore.get("access_token")?.value;
+async function fetchWithAccessToken(endpoint: string, options?: FetchOptions) {
+  const url = `${env.NEXT_PUBLIC_API_URL}${endpoint}`;
+  const authUrl = `${env.NEXT_PUBLIC_SITE_URL}/api/v1/auth`;
+
+  const accessToken = getAccessToken();
 
   if (!accessToken) {
-    throw new Error("No access token found");
+    console.log("Attempting refresh within fetch")
+    const attemptRefresh = await fetch(authUrl, {
+      method: "HEAD",
+    });
+    if (!attemptRefresh.ok) {
+      redirect("/auth/login");
+    }
   }
-
-  console.log(accessToken);
 
   const headers = {
     ...options?.headers,
@@ -31,7 +46,10 @@ export async function typedFetch<T>(
   url: string,
   options?: FetchOptions
 ): Promise<T> {
-  const response = await fetch(url, options);
+  const headers = {
+    ...options?.headers,
+  };
+  const response = await fetch(url, { ...options, headers });
 
   if (!response.ok) {
     throw new Error("Failed to fetch");
@@ -44,10 +62,18 @@ export async function typedFetchWithAccessToken<T>(
   endpoint: string,
   options?: FetchOptions
 ): Promise<T> {
-  const response = await fetchWithAccessToken(endpoint, options);
+  try {
+    const res = await fetchWithAccessToken(endpoint, options);
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch");
+    console.log(res);
+
+    if (!res.ok) {
+      const err: ApiErrorResponse = await res.json();
+      throw new Error(err.message);
+    }
+    return res.json() as Promise<T>;
+  } catch (error) {
+    logError({ message: "Error fetching data" }, "critical");
+    throw error;
   }
-  return response.json() as Promise<T>;
 }
