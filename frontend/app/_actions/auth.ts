@@ -13,40 +13,46 @@ import {
   UserRegisterReqDto,
 } from "@/types/converted-dtos/AuthDtos";
 import logError from "./logger";
-import { typedFetch } from "@/lib/fetch";
+import {
+  ApiErrorResponse,
+  typedFetch,
+  typedFetchWithoutAccessToken,
+} from "@/lib/fetch";
+import * as z from "zod";
+import { loginFormSchema } from "@/components/auth/auth-forms";
+import { redirect } from "next/navigation";
 
-export async function loginUser(req: UserLoginReqDto) {
-  let loginRes: AuthWithTokenResDto;
-  try {
-    loginRes = await typedFetch<AuthWithTokenResDto>(
-      `${env.NEXT_PUBLIC_API_URL}/Auth/login`,
-      {
-        cache: "no-cache",
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userName: req.userName,
-          password: req.password,
-        } satisfies UserLoginReqDto),
-      }
-    );
-    setAccessToken(loginRes.accessToken);
-    setRefreshToken(loginRes.refreshToken);
+export async function loginUser(values: z.infer<typeof loginFormSchema>) {
+  const loginRes = await typedFetchWithoutAccessToken<AuthWithTokenResDto>(
+    `${env.NEXT_PUBLIC_API_URL}/Auth/login`,
+    {
+      cache: "no-cache",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userName: values.username,
+        password: values.password,
+      } satisfies UserLoginReqDto),
+    }
+  );
 
-    console.log(loginRes);
-    return loginRes;
-  } catch (error) {
-    logError({ message: "Error logging in user" }, "critical");
-    throw error;
+  if ("StatusCode" in loginRes) {
+    return loginRes as ApiErrorResponse;
   }
+  // Remove any existing tokens before setting the new ones
+  removeAccessToken();
+  removeRefreshToken();
+
+  setAccessToken(loginRes.accessToken);
+  setRefreshToken(loginRes.refreshToken);
+  return loginRes;
 }
 
 export async function registerUser(authReq: UserRegisterReqDto) {
-  let authRes: AuthWithTokenResDto;
-  try {
-    authRes = await typedFetch<AuthWithTokenResDto>(
+  const registrationRes =
+    await typedFetchWithoutAccessToken<AuthWithTokenResDto>(
       `${env.NEXT_PUBLIC_API_URL}/auth/register`,
       {
         method: "POST",
@@ -56,16 +62,22 @@ export async function registerUser(authReq: UserRegisterReqDto) {
         body: JSON.stringify(authReq),
       }
     );
-    // Make sure to remove any existing tokens before setting the new ones
-    removeAccessToken();
-    removeRefreshToken();
 
-    setAccessToken(authRes.accessToken);
-    setRefreshToken(authRes.refreshToken);
+  // Remove any existing tokens before setting the new ones
+  removeAccessToken();
+  removeRefreshToken();
 
-    return authRes;
-  } catch (error) {
-    logError({ message: "Error registering user" }, "critical");
-    throw error;
+  if ("StatusCode" in registrationRes) {
+    return registrationRes as ApiErrorResponse;
   }
+
+  setAccessToken(registrationRes.accessToken);
+  setRefreshToken(registrationRes.refreshToken);
+
+  return registrationRes;
+}
+
+export async function signOutUser() {
+  removeAccessToken();
+  removeRefreshToken();
 }
