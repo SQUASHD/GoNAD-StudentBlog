@@ -1,9 +1,7 @@
 import logError from "@/app/_actions/logger";
 import { env } from "@/env.mjs";
-import { getAccessToken } from "@/lib/auth/tokens";
+import { getAccessToken } from "@/lib/auth/auth-jwt";
 import { redirect } from "next/navigation";
-;
-
 type FetchOptions = {
   method?: "GET" | "POST" | "PUT" | "DELETE";
   cache?: "no-cache" | "force-cache" | "no-store";
@@ -13,8 +11,8 @@ type FetchOptions = {
 };
 
 export type ApiErrorResponse = {
-  statusCode: string;
-  message: string;
+  StatusCode: number;
+  Message: string;
 };
 
 async function fetchWithAccessToken(endpoint: string, options?: FetchOptions) {
@@ -24,11 +22,10 @@ async function fetchWithAccessToken(endpoint: string, options?: FetchOptions) {
   const accessToken = getAccessToken();
 
   if (!accessToken) {
-    console.log("Attempting refresh within fetch")
-    const attemptRefresh = await fetch(authUrl, {
+    const refreshed = await fetch(authUrl, {
       method: "HEAD",
     });
-    if (!attemptRefresh.ok) {
+    if (!refreshed.ok) {
       redirect("/auth/login");
     }
   }
@@ -57,11 +54,31 @@ export async function typedFetch<T>(
 
   return response.json() as Promise<T>;
 }
+export async function typedFetchWithoutAccessToken<T>(
+  endpoint: string,
+  options?: FetchOptions
+): Promise<T | ApiErrorResponse> {
+  try {
+    const headers = {
+      ...options?.headers,
+    };
+    const res = await fetch(endpoint, { ...options, headers });
+
+    if (!res.ok) {
+      const err: ApiErrorResponse = await res.json();
+      return err;
+    }
+    return res.json() as Promise<T>;
+  } catch (error) {
+    logError({ message: "Error fetching data" }, "critical");
+    throw error;
+  }
+}
 
 export async function typedFetchWithAccessToken<T>(
   endpoint: string,
   options?: FetchOptions
-): Promise<T> {
+): Promise<T | ApiErrorResponse> {
   try {
     const res = await fetchWithAccessToken(endpoint, options);
 
@@ -69,7 +86,7 @@ export async function typedFetchWithAccessToken<T>(
 
     if (!res.ok) {
       const err: ApiErrorResponse = await res.json();
-      throw new Error(err.message);
+      return err;
     }
     return res.json() as Promise<T>;
   } catch (error) {

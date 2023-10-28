@@ -1,5 +1,6 @@
 import { Role, ValidateRBAC } from "./auth-types";
 import { authConfig } from "./auth-config";
+import { getAccessToken, getRefreshToken } from ".";
 
 /**
  * Checks if the user has the specified role.
@@ -33,3 +34,14 @@ export async function userHasRole(role: ValidateRBAC<Role>): Promise<{
 
   return { authenticated: true, authorized: true };
 }
+
+export async function userIsSignedIn() {
+  const accessToken = getAccessToken();
+  const refreshToken = getRefreshToken();
+
+  if (!accessToken || !refreshToken) {
+    return false;
+  }
+  return true;
+}
+

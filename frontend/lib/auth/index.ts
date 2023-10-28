@@ -1,2 +1,10 @@
-export { userHasRole } from "./auth-utils";
-export { getAccessToken, getRefreshToken, removeAccessToken, removeRefreshToken, setAccessToken, setRefreshToken, } from "./tokens";
+export { userHasRole, userIsSignedIn } from "./auth-utils";
+export {
+  getAccessToken,
+  getRefreshToken,
+  removeAccessToken,
+  removeRefreshToken,
+  setAccessToken,
+  setRefreshToken,
+  getUserId,
+} from "./auth-jwt";
