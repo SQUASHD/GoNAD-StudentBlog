@@ -30,7 +30,7 @@ export type SiteConfig = {
   url: string;
 };
 
-export type MarketingConfig = {
+export type BlogConfig = {
   mainNav: MainNavItem[];
 };
 

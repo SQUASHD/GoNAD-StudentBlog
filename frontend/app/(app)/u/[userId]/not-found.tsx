@@ -7,7 +7,7 @@ export default function NotFound() {
       <h2 className="text-5xl font-semibold tracking-tighter">
         User Not Found
       </h2>
-      <p>Sorry, couldn't find a user mathing that User ID</p>
+      <p>Sorry, couldn&apos;t find a user matching that User ID</p>
       <FormattedLink href="/">Return Home</FormattedLink>
     </div>
   );

@@ -1,6 +1,7 @@
 import { Role, ValidateRBAC } from "./auth-types";
 import { authConfig } from "./auth-config";
-import { getAccessToken, getRefreshToken } from ".";
+import { getAccessToken, getRefreshToken, getUserId } from "./auth-jwt";
+import { redirect } from "next/navigation";
 
 /**
  * Checks if the user has the specified role.
@@ -35,13 +36,33 @@ export async function userHasRole(role: ValidateRBAC<Role>): Promise<{
   return { authenticated: true, authorized: true };
 }
 
-export async function userIsSignedIn() {
+export function isUserSignedIn(): boolean {
   const accessToken = getAccessToken();
   const refreshToken = getRefreshToken();
 
-  if (!accessToken || !refreshToken) {
-    return false;
-  }
-  return true;
+  return !!accessToken && !!refreshToken;
 }
 
+type AuthRes = {
+  userId: string;
+};
+
+export async function auth(redirectTo: string): Promise<AuthRes> {
+  const accessToken = getAccessToken();
+  const refreshToken = getRefreshToken();
+
+  if (!accessToken && !refreshToken) {
+    redirect(`/auth/login?redirect=${redirectTo}`);
+  }
+  if (refreshToken && !accessToken) {
+    redirect(`/auth/refresh?redirect=${redirectTo}`);
+  }
+
+  const userId = getUserId();
+
+  if (!userId) {
+    redirect(`/auth/login?redirect=${redirectTo}`);
+  }
+
+  return { userId };
+}

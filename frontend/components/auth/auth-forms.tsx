@@ -11,11 +11,16 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { loginUser, registerUser } from "@/app/_actions/auth";
+import {
+  loginUser,
+  refreshAccessToken,
+  registerUser,
+} from "@/app/_actions/auth";
 import { Input } from "../ui/input";
 import { useState } from "react";
 import { ErrorMessage } from "../error";
 import { LucideLoader } from "lucide-react";
+import { redirect } from "next/navigation";
 
 export const loginFormSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters"),
@@ -46,11 +51,11 @@ export function LoginForm() {
     try {
       setLoading(true);
       const res = await loginUser(data);
-      if ("StatusCode" && "Message" in res) {
+      if ("StatusCode" in res && "Message" in res) {
         setErr(res.Message);
+      } else if ("AccessToken" in res) {
+        redirect("/");
       }
-    } catch (error) {
-      setErr("Something went wrong.");
     } finally {
       setLoading(false);
     }
@@ -69,7 +74,7 @@ export function LoginForm() {
               <FormItem>
                 <FormLabel>Username</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input autoComplete="username" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -82,7 +87,11 @@ export function LoginForm() {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input type="password" {...field} />
+                  <Input
+                    type="password"
+                    autoComplete="current-password"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -124,11 +133,8 @@ export function RegisterForm() {
       setLoading(true);
       const res = await registerUser(data);
       if ("StatusCode" in res) {
-        console.log(res);
         setErr(res.Message);
       }
-    } catch (e: any) {
-      setErr("Something went wrong.");
     } finally {
       setLoading(false);
     }
@@ -218,6 +224,41 @@ export function RegisterForm() {
           </div>
         </form>
       </Form>
+      {err && <ErrorMessage error={err} type="form" />}
+    </div>
+  );
+}
+
+export function RefreshSessionForm() {
+  const [err, setErr] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  async function submitRefesh() {
+    try {
+      setLoading(true);
+      const res = await refreshAccessToken();
+      if ("StatusCode" && "Message" in res) {
+        setErr(res.Message);
+      }
+    } catch (error) {
+      setErr("Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
+  }
+  return (
+    <div className="max-w-sm sm:max-w-md md:max-w-lg w-full">
+      <form action={submitRefesh} className="w-full flex flex-col gap-y-2">
+        {loading ? (
+          <Button disabled className="w-full">
+            {<LucideLoader className="animate-spin" />}
+          </Button>
+        ) : (
+          <Button type="submit" className="w-full">
+            Refresh session
+          </Button>
+        )}
+      </form>
       {err && <ErrorMessage error={err} type="form" />}
     </div>
   );

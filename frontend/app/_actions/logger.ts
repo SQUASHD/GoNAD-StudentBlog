@@ -6,6 +6,7 @@ type LogEntry = {
   timestamp?: string;
 };
 
+// TODO: Add a logger service to send logs to a server
 export default function logError(entry: LogEntry, level: ErrorLevel) {
   entry.timestamp = new Date().toISOString();
 

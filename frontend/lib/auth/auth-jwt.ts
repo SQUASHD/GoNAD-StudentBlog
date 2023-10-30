@@ -1,4 +1,9 @@
 import { cookies } from "next/headers";
+import { authConfig } from "./auth-config";
+
+const {
+  JWTSettings: { IdClaim: userIdClaim, accessIssuer, refreshIssuer },
+} = authConfig;
 
 type JWTAccessTokenPayload = {
   user_id: typeof userIdClaim;
@@ -12,16 +17,16 @@ type JWTRefreshTokenPayload = {
   iss: typeof refreshIssuer;
 };
 
-const accessTokenDuration = 60 * 60 * 24 * 7; // 7 days in seconds
-const refreshTokenDuration = 60 * 60 * 24; // 24 hours in seconds
-const userIdClaim = "user_id";
-const accessIssuer = "StudentBlogAPI-Access";
-const refreshIssuer = "StudentBlogAPI-Refresh";
+// These values must match the values in the API
+
+export const accessTokenDuration = 1000 * 60 * 60 * 3; // 3 hours in milliseconds
+export const refreshTokenDuration = 1000 * 60 * 60 * 24; // 24 hours in milliseconds
 
 export function parseJwt(
   token: string
 ): JWTAccessTokenPayload | JWTRefreshTokenPayload {
-  return JSON.parse(Buffer.from(token.split(".")[1], "base64").toString());
+  const toBuffer: string = token.split(".")[1] ?? "";
+  return JSON.parse(Buffer.from(toBuffer, "base64").toString());
 }
 
 export function getUserIdFromToken(token: string) {
@@ -30,7 +35,7 @@ export function getUserIdFromToken(token: string) {
 
 export function getUserId() {
   const accessToken = getAccessToken();
-  
+
   if (!accessToken) {
     return null;
   }
@@ -42,7 +47,7 @@ export function setAccessToken(token: string) {
     name: "access_token",
     value: token,
     httpOnly: true,
-    expires: accessTokenDuration,
+    expires: Date.now() + accessTokenDuration,
   });
 }
 
@@ -52,7 +57,7 @@ export function getAccessToken() {
 }
 
 export function removeAccessToken() {
-  cookies().delete("access_token");
+  return cookies().delete("access_token");
 }
 
 export function getRefreshToken() {
@@ -64,10 +69,10 @@ export function setRefreshToken(token: string) {
     name: "refresh_token",
     value: token,
     httpOnly: true,
-    expires: refreshTokenDuration,
+    expires: Date.now() + refreshTokenDuration,
   });
 }
 
 export function removeRefreshToken() {
-  cookies().delete("refresh_token");
+  return cookies().delete("refresh_token");
 }

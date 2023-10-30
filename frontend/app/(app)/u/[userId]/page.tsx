@@ -1,12 +1,11 @@
 import logError from "@/app/_actions/logger";
-import { ApiErrorResponse, typedFetchWithAccessToken } from "@/lib/fetch";
+import { typedFetchWithAuth } from "@/lib/fetch";
 import { UserResDto } from "@/types/converted-dtos/UserDtos";
 import { notFound } from "next/navigation";
 
 async function getUserProfile(userId: string) {
   const endpoint = `/users/${userId}`;
-  const res = await typedFetchWithAccessToken<UserResDto>(endpoint);
-  return res;
+  return await typedFetchWithAuth<UserResDto>(endpoint);
 }
 
 export default async function UserProfile({

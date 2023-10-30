@@ -27,6 +27,8 @@ import {
   Link,
   Archive,
   Sparkles,
+  Book,
+  LucideMenu
 } from "lucide-react";
 
 
@@ -60,4 +62,6 @@ export const Icons = {
   link: Link,
   archive: Archive,
   sparkles: Sparkles,
+  logo: Book,
+  menu: LucideMenu
 };

@@ -5,7 +5,8 @@ import { cn } from "@/lib/utils";
 import { MainNavItem } from "@/types";
 import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
+import { Icons } from "./icons";
 
 type MainNavProps = {
   items?: MainNavItem[];
@@ -19,7 +20,7 @@ export function MainNav({ items, children }: MainNavProps) {
   return (
     <div className="flex gap-6 md:gap-10">
       <Link href="/" className="hidden items-center space-x-2 md:flex">
-        {/* <Icons.logo /> */}
+        <Icons.logo />
         <span className="hidden font-bold sm:inline-block">
           {siteConfig.name}
         </span>
@@ -47,7 +48,7 @@ export function MainNav({ items, children }: MainNavProps) {
         className="flex items-center space-x-2 md:hidden"
         onClick={() => setShowMobileMenu(!showMobileMenu)}
       >
-        {showMobileMenu ? <Icons.close /> : <Icons.logo />}
+        {showMobileMenu ? <Icons.close /> : <Icons.menu />}
         <span className="font-bold">Menu</span>
       </button>
       {showMobileMenu && items && (
@@ -60,6 +61,16 @@ export function MainNav({ items, children }: MainNavProps) {
 interface MobileNavProps {
   items: MainNavItem[];
   children?: React.ReactNode;
+}
+
+export function useLockBody() {
+  useLayoutEffect((): (() => void) => {
+    const originalStyle: string = window.getComputedStyle(
+      document.body
+    ).overflow
+    document.body.style.overflow = "hidden"
+    return () => (document.body.style.overflow = originalStyle)
+  }, [])
 }
 
 export function MobileNav({ items, children }: MobileNavProps) {
