@@ -15,7 +15,13 @@ Simply choose the folders containing your DTOs and the folder you want to add yo
 For example, from the root of the student blog, I run:
 
 ```zsh
-go run ./cli-utils/dto-converter/main.go --in=./backend/StudentBlogAPI/Model/DTOs --out=./frontend/dtos
+go run ./cli-utils/dto-converter/main.go --in=./backend/StudentBlogAPI/Model/DTOs --out=./frontend/types/converted-dtos
+```
+
+or run the script:
+
+```zsh
+./cli-utils/scripts/run-converter.sh
 ```
 
 ### Limitations
