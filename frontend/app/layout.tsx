@@ -7,9 +7,11 @@ import { env } from "@/env.mjs";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Student Blog",
-  description: "The student blog for one student at boot.dev",
-};
+  title: {
+    template: '%s | Student Blog Project',
+    default: 'Student Blog Project', 
+  },
+}
 
 export default async function RootLayout({
   children,

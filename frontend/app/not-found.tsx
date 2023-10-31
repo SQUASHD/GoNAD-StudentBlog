@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { headers } from "next/headers";
-import { FormattedLink } from "@/components/formatted-primitives";
+import { FormattedLink } from "@/components/formatted";
 
 export default function NotFound() {
   return (
