@@ -35,7 +35,11 @@ export const registerFormSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-export function LoginForm() {
+type LoginFormProps = {
+  redirectUrl: string;
+};
+
+export function LoginForm({ redirectUrl }: LoginFormProps) {
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -54,7 +58,7 @@ export function LoginForm() {
       if ("StatusCode" in res && "Message" in res) {
         setErr(res.Message);
       } else if ("AccessToken" in res) {
-        redirect("/");
+        redirect(redirectUrl ?? "/");
       }
     } finally {
       setLoading(false);
