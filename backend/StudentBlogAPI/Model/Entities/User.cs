@@ -13,13 +13,13 @@ public class User
     [MaxLength(20)]
     public string UserName { get; set; } = string.Empty;
 
-    [Required] public string FirstName { get; set; } = string.Empty;
+    [Required] [MaxLength(64)] public string FirstName { get; set; } = string.Empty;
 
-    [Required] public string LastName { get; set; } = string.Empty;
+    [Required] [MaxLength(64)] public string LastName { get; set; } = string.Empty;
 
-    [Required] public string HashedPassword { get; set; } = string.Empty;
+    [Required] [MaxLength(256)]  public string HashedPassword { get; set; } = string.Empty;
 
-    [Required] public string Salt { get; set; } = string.Empty;
+    [Required] [MaxLength(256)] public string Salt { get; set; } = string.Empty;
 
     [Required]
     [EmailAddress]
