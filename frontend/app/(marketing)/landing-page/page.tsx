@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 export const metadata = {
-  title: "Student Blog Project",
+  title: "Landing Page",
   content: "The landing page for the student blog project.",
 };
 
