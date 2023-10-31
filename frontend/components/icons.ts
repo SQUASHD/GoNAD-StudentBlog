@@ -28,10 +28,9 @@ import {
   Archive,
   Sparkles,
   Book,
-  LucideMenu
+  LucideMenu,
+  BarChart,
 } from "lucide-react";
-
-
 
 export const Icons = {
   book: BookOpen,
@@ -63,5 +62,6 @@ export const Icons = {
   archive: Archive,
   sparkles: Sparkles,
   logo: Book,
-  menu: LucideMenu
+  menu: LucideMenu,
+  dashboard: BarChart,
 };

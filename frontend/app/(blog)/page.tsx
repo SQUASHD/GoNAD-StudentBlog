@@ -10,11 +10,6 @@ import { CommentsCard, PostPreview, UsersCard } from "@/components/previews";
 
 export const revalidate = 0;
 
-export const metadata = {
-  title: "Front Page",
-  description: "The student blog project powered by the GoNAD stack.",
-};
-
 export default async function HomePage() {
   await auth("/");
   const postsReq = typedFetchWithAuth<PaginatedResultDto<PostResDto>>("/posts");

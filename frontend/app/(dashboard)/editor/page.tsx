@@ -108,12 +108,12 @@ export default function EditorHomePage() {
 
         const target = event.target as HTMLTextAreaElement;
         const { selectionStart, selectionEnd } = target;
-        const updatedMd =
+        const updatedText =
           textareaVal.substring(0, selectionStart) +
           "\t" +
           textareaVal.substring(selectionEnd);
 
-        setTextareaVal(updatedMd);
+        setTextareaVal(updatedText);
 
         setTimeout(() => {
           if (textareaRef.current) {

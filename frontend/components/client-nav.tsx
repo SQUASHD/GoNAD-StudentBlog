@@ -2,16 +2,16 @@
 
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
-import { MainNavItem } from "@/types";
+import { MainNavItem, SidebarNavItem } from "@/types";
 import Link from "next/link";
-import { useSelectedLayoutSegment } from "next/navigation";
+import { usePathname, useSelectedLayoutSegment } from "next/navigation";
 import { useLayoutEffect, useState } from "react";
 import { Icons } from "./icons";
 
 type MainNavProps = {
   items?: MainNavItem[];
   children?: React.ReactNode;
-}
+};
 
 export function MainNav({ items, children }: MainNavProps) {
   const segment = useSelectedLayoutSegment();
@@ -67,10 +67,10 @@ export function useLockBody() {
   useLayoutEffect((): (() => void) => {
     const originalStyle: string = window.getComputedStyle(
       document.body
-    ).overflow
-    document.body.style.overflow = "hidden"
-    return () => (document.body.style.overflow = originalStyle)
-  }, [])
+    ).overflow;
+    document.body.style.overflow = "hidden";
+    return () => (document.body.style.overflow = originalStyle);
+  }, []);
 }
 
 export function MobileNav({ items, children }: MobileNavProps) {
@@ -104,5 +104,41 @@ export function MobileNav({ items, children }: MobileNavProps) {
         {children}
       </div>
     </div>
+  );
+}
+
+interface DashboardNavProps {
+  items: SidebarNavItem[];
+}
+
+export function DashboardNav({ items }: DashboardNavProps) {
+  const path = usePathname();
+
+  if (!items?.length) {
+    return null;
+  }
+
+  return (
+    <nav className="grid items-start gap-2">
+      {items.map((item, index) => {
+        const Icon = Icons[item.icon || "arrowRight"];
+        return (
+          item.href && (
+            <Link key={index} href={item.disabled ? "/" : item.href}>
+              <span
+                className={cn(
+                  "group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground",
+                  path === item.href ? "bg-accent" : "transparent",
+                  item.disabled && "cursor-not-allowed opacity-80"
+                )}
+              >
+                <Icon className="mr-2 h-4 w-4" />
+                <span>{item.title}</span>
+              </span>
+            </Link>
+          )
+        );
+      })}
+    </nav>
   );
 }
