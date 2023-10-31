@@ -1,8 +1,10 @@
 using System.Text;
+using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -42,9 +44,8 @@ builder.Services.AddControllers(options =>
     options.Filters.Add(new AuthorizeFilter(authorizationPolicy));
 });
 
+// Make the API return validation errors in the response body
 builder.Services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
-
-// Logger and global exception handling
 
 // Authentication
 // JWT middleware
@@ -63,6 +64,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                                                                 throw new InvalidOperationException()))
         };
     });
+
+// Rate limiting middleware
+builder.Services.AddRateLimiter(l =>
+    l.AddFixedWindowLimiter(policyName: "fixed", options =>
+    {
+        options.PermitLimit = 100;
+        options.Window = TimeSpan.FromSeconds(12);
+        options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        options.QueueLimit = 20;
+    }));
+
 
 // Authorization
 // Enable admin only authorization
