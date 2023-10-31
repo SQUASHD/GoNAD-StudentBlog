@@ -1,4 +1,5 @@
 import { Icons } from "@/components/icons";
+export type { RedirectUserParams } from "@/types/user-flow";
 
 export type NavItem = {
   title: string;
