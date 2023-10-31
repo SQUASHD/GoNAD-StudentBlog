@@ -4,15 +4,19 @@ import { LoginForm } from "@/components/auth/auth-forms";
 import Link from "next/link";
 import { signOutUser } from "@/app/_actions/auth";
 import { isUserSignedIn } from "@/lib/auth";
-
+import { RedirectUserParams } from "@/types";
 
 export const metadata: Metadata = {
   title: "Student Blog | Login",
   description: "Authentiation page for the student blog project.",
 };
 
-export default async function LoginPage() {
-  const isAuth = isUserSignedIn()
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: RedirectUserParams;
+}) {
+  const isAuth = isUserSignedIn();
 
   if (isAuth) {
     return (
@@ -32,5 +36,5 @@ export default async function LoginPage() {
       </div>
     );
   }
-  return <LoginForm />;
+  return <LoginForm redirectUrl={searchParams.redirect} />;
 }

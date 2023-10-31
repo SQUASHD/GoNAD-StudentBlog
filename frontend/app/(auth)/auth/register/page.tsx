@@ -1,13 +1,13 @@
 import { signOutUser } from "@/app/_actions/auth";
 import { RegisterForm } from "@/components/auth/auth-forms";
-import { FormattedLink } from "@/components/formatted-primitives";
+import { FormattedLink } from "@/components/formatted";
 import { Button } from "@/components/ui/button";
 import { isUserSignedIn } from "@/lib/auth";
 import Link from "next/link";
 
 export default async function RegistrationPage() {
-  const isAuth = isUserSignedIn()
-  
+  const isAuth = isUserSignedIn();
+
   if (isAuth) {
     return (
       <div className="flex flex-col items-center justify-center h-full">
