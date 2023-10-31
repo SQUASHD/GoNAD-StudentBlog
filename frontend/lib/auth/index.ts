@@ -1,4 +1,4 @@
-export { userHasRole, isUserSignedIn } from "./auth-utils";
+export { userHasRole, isUserSignedIn, auth} from "./auth-utils";
 export {
   getAccessToken,
   getRefreshToken,

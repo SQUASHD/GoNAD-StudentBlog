@@ -6,13 +6,13 @@ const {
 } = authConfig;
 
 type JWTAccessTokenPayload = {
-  user_id: typeof userIdClaim;
+  user_id: string;
   exp: number;
   iss: typeof accessIssuer;
 };
 
 type JWTRefreshTokenPayload = {
-  user_id: typeof userIdClaim;
+  user_id: string
   exp: number;
   iss: typeof refreshIssuer;
 };
@@ -34,14 +34,15 @@ export function getUserIdFromToken(token: string) {
 }
 
 export function getUserId() {
-  const accessToken = getAccessToken();
+  const refreshToken = getRefreshToken();
 
-  if (!accessToken) {
+  if (!refreshToken) {
     return null;
   }
-  return getUserIdFromToken(accessToken);
+  return getUserIdFromToken(refreshToken);
 }
 
+// Utility functions for getting and removing the access and refresh tokens
 export function setAccessToken(token: string) {
   cookies().set({
     name: "access_token",
@@ -51,7 +52,6 @@ export function setAccessToken(token: string) {
   });
 }
 
-// Utility functions for getting and removing the access and refresh tokens
 export function getAccessToken() {
   return cookies().get("access_token")?.value;
 }
