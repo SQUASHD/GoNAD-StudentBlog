@@ -48,3 +48,9 @@ For example, from the root of this project I run:
 go run ./cli-utils/log-finder/main.go --dir=./frontend
 ```
 
+or run the script
+
+```zsh
+./cli-utils/scripts/find-logs.sh
+```
+
