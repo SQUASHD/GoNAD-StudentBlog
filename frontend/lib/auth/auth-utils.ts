@@ -52,7 +52,7 @@ export async function auth(redirectTo: string): Promise<AuthRes> {
   const refreshToken = getRefreshToken();
 
   if (!accessToken && !refreshToken) {
-    redirect(`/auth/login?redirect=${redirectTo}`);
+    redirect(`/landing-page`);
   }
   if (refreshToken && !accessToken) {
     redirect(`/auth/refresh?redirect=${redirectTo}`);

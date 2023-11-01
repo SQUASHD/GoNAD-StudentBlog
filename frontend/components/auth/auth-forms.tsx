@@ -20,7 +20,7 @@ import { Input } from "../ui/input";
 import { useState } from "react";
 import { ErrorMessage } from "../error";
 import { LucideLoader } from "lucide-react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export const loginFormSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters"),
@@ -43,6 +43,8 @@ export function LoginForm({ redirectUrl }: LoginFormProps) {
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
+  const router = useRouter();
+
   const loginForm = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
@@ -55,10 +57,10 @@ export function LoginForm({ redirectUrl }: LoginFormProps) {
     try {
       setLoading(true);
       const res = await loginUser(data);
-      if ("StatusCode" in res && "Message" in res) {
+      if ("StatusCode" in res) {
         setErr(res.Message);
-      } else if ("AccessToken" in res) {
-        redirect(redirectUrl ?? "/");
+      } else if (res.accessToken) {
+        router.push(redirectUrl ?? "/");
       }
     } finally {
       setLoading(false);
@@ -120,6 +122,8 @@ export function LoginForm({ redirectUrl }: LoginFormProps) {
 export function RegisterForm() {
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  
+  const router = useRouter();
 
   const registerForm = useForm<z.infer<typeof registerFormSchema>>({
     resolver: zodResolver(registerFormSchema),
@@ -138,6 +142,9 @@ export function RegisterForm() {
       const res = await registerUser(data);
       if ("StatusCode" in res) {
         setErr(res.Message);
+      }
+      else if (res.accessToken) {
+        router.push("/");
       }
     } finally {
       setLoading(false);
