@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  studentblogapi:
+    image: studentblogapi
+    ports:
+      - "8080:80"
+      - "8081:443"
+    env_file:
+      - .env
