@@ -127,6 +127,9 @@ func csharpTypeToTypeScript(csharpType string) (string, string) {
 		comment = " // Represents a DateTime type in string format"
 	case "bool":
 		tsType = "boolean"
+	case "PublicationStatus":
+		tsType = "PublicationStatus"
+		comment = " // PublicationStatus is an enum, refer to the enum definition for possible values"
 	default:
 		tsType = "unknown"
 	}
