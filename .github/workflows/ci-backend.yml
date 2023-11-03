@@ -29,10 +29,10 @@ jobs:
           dotnet-version: '7.0.307' 
       
       - name: Restore dependencies
-        run: dotnet restore ./StudentBlogApi.sln
+        run: dotnet restore ./StudentBlogAPI.sln
       
       - name: Build
-        run: dotnet build ./StudentBlogApi.sln --configuration Release --no-restore
+        run: dotnet build ./StudentBlogAPI.sln --configuration Release --no-restore
       
       - name: Test
-        run: dotnet test ./StudentBlogApi.sln --configuration Release --no-build
+        run: dotnet test ./StudentBlogAPI.sln --configuration Release --no-build
