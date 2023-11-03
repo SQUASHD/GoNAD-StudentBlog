@@ -3,12 +3,12 @@ name: ci-frontend
 on:
   push:
     paths:
-      - 'frontend/**'
+      - "frontend/**"
     branches:
       - main
   pull_request:
     paths:
-      - 'frontend/**'
+      - "frontend/**"
     branches:
       - main
   workflow_dispatch:
@@ -33,10 +33,9 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '18'
-          cache: 'npm'
+          node-version: "18"
+          cache: "npm"
           cache-dependency-path: frontend/package-lock.json
-            
 
       - name: Install dependencies
         run: npm install
@@ -45,3 +44,5 @@ jobs:
       - name: Build
         run: npm run build
         working-directory: frontend
+        env:
+          NEXT_PUBLIC_API_URL: "https://studentblog-backend-zion66dn5a-nw.a.run.app/api/v1"
