@@ -37,11 +37,11 @@ jobs:
         run: dotnet build ./StudentBlogAPI.sln --configuration Release --no-restore
       
       - name: Test
-        run: dotnet test ./StudentBlogAPI.sln --configuration Release --no-build --logger "trx;LogFileName=test_results.xml" --results-directory /TestResults
+        run: dotnet test ./StudentBlogAPI.sln --configuration Release --no-build --logger "trx;LogFileName=test_results.xml" --results-directory ./TestResults
       
       - name: Upload Test Results
         if: always()
         uses: actions/upload-artifact@v2
         with:
           name: Test Results
-          path: ./backend/TestResults/*.xml
+          path: ./TestResults/*.xml
