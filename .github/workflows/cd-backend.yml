@@ -1,0 +1,32 @@
+name: CD - ASP.NET Core Backend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v1'
+
+      - name: Build and push Docker image to Artifact Registry
+        run: gcloud builds submit --tag europe-west2-docker.pkg.dev/studentblog-backend/studentblog-backend-repo/studentblog-backend:latest .
+        env:
+            PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+        
+      - name: 'Deploy to Cloud Run'
+        run: cloud run deploy notely --image europe-west2-docker.pkg.dev/notely-402219/notely-ar-repo/notely:latest --region europe-west2 --allow-unauthenticated --project studentblog-backend --max-instances=4
