@@ -3,12 +3,12 @@ name: ci-frontend
 on:
   push:
     paths:
-      - "frontend/**"
+      - 'frontend/**'
     branches:
       - main
   pull_request:
     paths:
-      - "frontend/**"
+      - 'frontend/**'
     branches:
       - main
   workflow_dispatch:
@@ -26,15 +26,17 @@ jobs:
           path: |
             ~/.npm
             frontend/.next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('frontend/package-lock.json') }}-${{ hashFiles('frontend/**/*.{js,jsx,ts,tsx}') }}
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('frontend/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('frontend/package-lock.json') }}-
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "18"
-          cache: "npm"
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+            
 
       - name: Install dependencies
         run: npm install
