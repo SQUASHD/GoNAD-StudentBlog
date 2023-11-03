@@ -6,19 +6,50 @@ import {
   useEffect,
   useRef,
   useState,
+  Fragment,
 } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { FormattedMarkdown } from "@/components/formatted";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { updatePost } from "@/app/_actions/post";
-import { Form, FormControl, FormField, FormItem } from "./ui/form";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "./ui/form";
 import { Button } from "./ui/button";
 import { useToast } from "./ui/use-toast";
 import { Icons } from "./icons";
 import { Input } from "./ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useBeforeUnload from "./save-prompt";
+import { PostResDto } from "@/types/converted-dtos/PostDtos";
+import { DropdownMenu } from "./ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import Link from "next/link";
+import { AlertDialog } from "@radix-ui/react-alert-dialog";
+import {
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./ui/alert-dialog";
+import { useRouter } from "next/navigation";
 
 /**
  * This hook allows the user to use tab to indent or unindent text in the textarea.
@@ -114,29 +145,27 @@ export const updatePostSchema = z.object({
     .string()
     .min(3, "Content must be at least 3 characters")
     .max(10000, "Content must be less than 10000 characters"),
+  status: z.enum(["Draft", "Published"]),
 });
 
 type EditorProps = {
-  postContent: string;
-  postId: string;
-  postTitle: string;
+  post: PostResDto;
 };
 
-export default function Editor({
-  postContent,
-  postId,
-  postTitle,
-}: EditorProps) {
+export default function Editor({ post }: EditorProps) {
   const { toast } = useToast();
-  const [title, setTitle] = useState<string>(postTitle);
-  const [textareaVal, setTextareaVal] = useState<string>(postContent);
+  const [title, setTitle] = useState<string>(post.title);
+  const [textareaVal, setTextareaVal] = useState<string>(post.content);
   const [loading, setLoading] = useState<boolean>(false);
+
+  const router = useRouter();
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(
     null
   ) as MutableRefObject<HTMLTextAreaElement | null>;
 
   async function submitUpdate(data: z.infer<typeof updatePostSchema>) {
+    console.log(data);
     try {
       setLoading(true);
       const res = await updatePost(data);
@@ -169,9 +198,10 @@ export default function Editor({
     resolver: zodResolver(updatePostSchema),
     // Set default values for the form based on GET request
     defaultValues: {
-      postId: postId,
-      title: postTitle,
-      content: postContent,
+      postId: `${post.id}`,
+      title: post.title,
+      content: post.content,
+      status: post.status,
     },
   });
 
@@ -194,7 +224,7 @@ export default function Editor({
     }
   }, [errors, toast]);
 
-  useBeforeUnload();
+  // useBeforeUnload();
 
   const handleKeyDown = useTabbedSpaces(
     textareaVal,
@@ -203,89 +233,130 @@ export default function Editor({
   );
 
   return (
-    <Form {...updatePostForm}>
-      <form
-        onSubmit={updatePostForm.handleSubmit(submitUpdate)}
-        className="h-full"
+    <Fragment>
+      <Button
+        onClick={() => router.back()}
+        className=" w-8 p-1 h-8 flex items-center justify-center absolute top-2 left-2"
       >
-        <div className="mx-auto max-w-7xl w-full max-h-full py-8 h-full flex flex-col items-center">
-          <div className="flex justify-between w-full  px-8 py-4">
-            <div className="flex flex-col">
-              <h1 className="text-4xl font-bold">Editor</h1>
-              <p className="text-lg leading-tight max-w-xl">
-                This is the editor page. You can write markdown here and see it
-                rendered on the right. Remember to save your work!
-              </p>
-            </div>
-            {loading ? (
-              <Button disabled={!loading} className="w-32 self-end">
-                {<Icons.spinner className="animate-spin" />}
-              </Button>
-            ) : (
-              <Button type="submit" className="w-32 self-end">
-                Update Post
-              </Button>
-            )}
-          </div>
-          <div className="flex flex-grow gap-4 w-full px-8 overflow-y-scroll">
-            <div className="flex h-full gap-4 w-full">
-              <div className="w-1/2">
+        <Icons.arrowRight className="rotate-180 w-4 h-4" />
+      </Button>
+      <Form {...updatePostForm}>
+        <form
+          onSubmit={updatePostForm.handleSubmit(submitUpdate)}
+          className="h-full"
+        >
+          <div className="mx-auto max-w-7xl w-full max-h-full py-8 h-full flex flex-col items-center">
+            <div className="flex justify-between w-full  px-8 py-4">
+              <div className="flex flex-col">
+                <h1 className="text-4xl font-bold">Editor</h1>
+                <p className="text-lg leading-tight max-w-xl">
+                  This is the editor page. You can write markdown here and see
+                  it rendered on the right. Remember to save your work!
+                </p>
+              </div>
+              <div className="flex gap-2">
                 <FormField
                   control={updatePostForm.control}
-                  name="title"
+                  name="status"
                   render={({ field }) => (
-                    <FormItem>
+                    <Fragment>
+                      <FormLabel className="sr-only">
+                        Publication Status
+                      </FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-32">
+                            <SelectValue placeholder="" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem
+                            value="Draft"
+                            disabled={post.status === "Published"}
+                          >
+                            Draft
+                          </SelectItem>
+                          <SelectItem value="Published">Published</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </Fragment>
+                  )}
+                />
+                {loading ? (
+                  <Button disabled={!loading} className="w-32">
+                    {<Icons.spinner className="animate-spin" />}
+                  </Button>
+                ) : (
+                  <Button type="submit" className="w-32">
+                    Update Post
+                  </Button>
+                )}
+              </div>
+            </div>
+            <div className="flex flex-grow gap-4 w-full px-8 overflow-y-scroll">
+              <div className="flex h-full gap-4 w-full">
+                <div className="w-1/2">
+                  <FormField
+                    control={updatePostForm.control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            id="title"
+                            className="w-full h-12 px-4 text-2xl font-bold border-b-0 rounded-b-none ring-0 focus:ring-0 focus-visible:ring-0"
+                            placeholder={"Your post title"}
+                            value={title}
+                            ref={field.ref}
+                            onChange={(e) => {
+                              setTitle(e.target.value);
+                              field.onChange(e);
+                            }}
+                            onBlur={field.onBlur}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={updatePostForm.control}
+                    name="content"
+                    render={({ field }) => (
                       <FormControl>
-                        <Input
-                          {...field}
-                          id="title"
-                          className="w-full h-12 px-4 text-2xl font-bold border-b-0 rounded-b-none"
-                          placeholder={"Your post title"}
-                          value={title}
-                          ref={field.ref}
-                          onChange={(e) => {
-                            setTitle(e.target.value);
-                            field.onChange(e);
+                        <Textarea
+                          ref={(e) => {
+                            textareaRef.current = e;
+                            field.ref(e);
+                          }}
+                          id="content"
+                          className="h-full rounded-t-none border-t-0 overflow-scroll ring-0 focus-visible:ring-0 whitespace-nowrap resize-none"
+                          value={textareaVal}
+                          name="content"
+                          onKeyDown={handleKeyDown}
+                          onChange={(event) => {
+                            setTextareaVal(event.target.value);
+                            field.onChange(event);
                           }}
                           onBlur={field.onBlur}
                         />
                       </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={updatePostForm.control}
-                  name="content"
-                  render={({ field }) => (
-                    <FormControl>
-                      <Textarea
-                        ref={(e) => {
-                          textareaRef.current = e;
-                          field.ref(e);
-                        }}
-                        id="content"
-                        className="h-full rounded-t-none border-t-0 overflow-scroll ring-0 focus-visible:ring-0 whitespace-nowrap resize-none"
-                        value={textareaVal}
-                        name="content"
-                        onKeyDown={handleKeyDown}
-                        onChange={(event) => {
-                          setTextareaVal(event.target.value);
-                          field.onChange(event);
-                        }}
-                        onBlur={field.onBlur}
-                      />
-                    </FormControl>
-                  )}
-                />
-              </div>
+                    )}
+                  />
+                </div>
 
-              <div className="w-1/2">
-                <FormattedMarkdown title={title} content={textareaVal} />
+                <div className="w-1/2">
+                  <FormattedMarkdown title={title} content={textareaVal} />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </form>
-    </Form>
+        </form>
+      </Form>
+    </Fragment>
   );
 }
