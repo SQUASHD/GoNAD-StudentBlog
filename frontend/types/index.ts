@@ -7,6 +7,13 @@ export type NavItem = {
   disabled?: boolean;
 };
 
+export type PaginatedSearchParams = {
+  page: string;
+  size: string;
+  // TODO: Add orderBy
+  // orderBy: string; 
+};
+
 export type MainNavItem = NavItem;
 
 export type SidebarNavItem = {
