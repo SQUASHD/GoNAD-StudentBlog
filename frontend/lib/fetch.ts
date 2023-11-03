@@ -22,12 +22,14 @@ export async function typedFetchWithAuth<T>(
     throw new ApiError(401, "Access token is missing.");
   }
 
-  const authHeaders = {
+  const defaultHeaders = {
     Authorization: `Bearer ${accessToken}`,
+    "Content-Type": "application/json",
   };
+
   const res = await fetch(requestURL, {
     ...options,
-    headers: { ...options?.headers, ...authHeaders },
+    headers: { ...options?.headers, ...defaultHeaders },
   });
 
   if (res.ok) {
