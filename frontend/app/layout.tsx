@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Providers } from "./providers";
+import ClientProviders from "./_providers/client-providers";
 import { env } from "@/env.mjs";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | Student Blog Project',
-    default: 'Student Blog Project', 
+    template: "%s | Student Blog Project",
+    default: "Student Blog Project",
   },
-}
+};
 
 export default async function RootLayout({
   children,
@@ -32,10 +32,10 @@ export default async function RootLayout({
         <body className={`${inter.className} h-full`}>
           <div className="flex flex-col h-full items-center justify-center">
             <h1 className="text-7xl font-black text-red-500 uppercase tracking-tighter">
-              API Server Not On
+              Internal Server Error
             </h1>
             <p className="text-4xl font-thin tracking-tight">
-              Turn it on, you dummy.
+              Please contact the administrator.
             </p>
           </div>
         </body>
@@ -46,7 +46,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className="h-full" suppressHydrationWarning>
       <body className={`${inter.className} h-full`}>
-        <Providers>{children}</Providers>
+        <ClientProviders>{children}</ClientProviders>
       </body>
     </html>
   );

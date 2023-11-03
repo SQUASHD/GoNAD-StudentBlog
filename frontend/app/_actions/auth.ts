@@ -16,7 +16,6 @@ import {
 
 import * as z from "zod";
 import { loginFormSchema } from "@/components/auth/auth-forms";
-import { redirect } from "next/navigation";
 import { typedFetch } from "@/lib/fetch";
 import { AccessTokenResDto } from "@/types/converted-dtos/TokenDtos";
 import { ApiErrorResponse } from "@/lib/errors";
@@ -50,21 +49,19 @@ export async function loginUser(values: z.infer<typeof loginFormSchema>) {
 }
 
 export async function registerUser(authReq: UserRegisterReqDto) {
-  const registrationRes = await typedFetch<AuthWithTokenResDto | ApiErrorResponse>(
-    `${env.NEXT_PUBLIC_API_URL}/auth/register`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(authReq),
-    }
-  );
+  const registrationRes = await typedFetch<
+    AuthWithTokenResDto | ApiErrorResponse
+  >(`${env.NEXT_PUBLIC_API_URL}/auth/register`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(authReq),
+  });
 
   if ("StatusCode" in registrationRes) {
     return registrationRes;
   }
-
 
   setAccessToken(registrationRes.accessToken);
   setRefreshToken(registrationRes.refreshToken);
