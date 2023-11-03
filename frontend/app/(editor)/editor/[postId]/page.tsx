@@ -17,15 +17,8 @@ export default async function PostEditor({
   await auth(`/editor/${params.postId}`);
   let post = await getPost(params.postId);
 
-
   if ("StatusCode" in post && post.StatusCode === 404) notFound();
 
   post = post as PostResDto;
-  return (
-    <Editor
-      postContent={post.content}
-      postId={`${post.id}`}
-      postTitle={post.title}
-    />
-  );
+  return <Editor post={post} />;
 }

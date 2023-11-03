@@ -33,7 +33,7 @@ export default async function PostsOverview({
             <CreateNewPostButton type="text" />
           </div>
         ) : (
-          <ul className="flex flex-col">
+          <ul className="flex flex-col gap-2 mt-2">
             {posts?.items.map((post) => (
               <li key={post.id}>
                 <PostRow post={post} />
