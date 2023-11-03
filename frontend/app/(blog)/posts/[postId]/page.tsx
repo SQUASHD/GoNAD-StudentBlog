@@ -3,15 +3,10 @@ import {
   FormattedMarkdown,
   FormattedPageSection,
 } from "@/components/formatted";
-import { CommentsCard } from "@/components/previews";
-import { Avatar } from "@/components/ui/avatar";
 import { auth } from "@/lib/auth";
-import { ApiErrorResponse } from "@/lib/errors";
 import { typedFetchWithAuth } from "@/lib/fetch";
-import { PaginatedResultDto } from "@/types/GenericDtos";
 import { CommentResDto } from "@/types/converted-dtos/CommenDtos";
 import { PostResDto } from "@/types/converted-dtos/PostDtos";
-import { AvatarImage } from "@radix-ui/react-avatar";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Fragment } from "react";
@@ -45,8 +40,10 @@ export default async function Page({ params }: Props) {
   const postId = params.postId ? params.postId : "1";
   await auth(`/posts/${postId}`);
 
-  let post = await getPost(postId);
-  let comments = await getComments(postId);
+  let postReq =  getPost(postId);
+  let commentsReq = getComments(postId);
+  
+  let [post, comments] = await Promise.all([postReq, commentsReq]);
 
   if ("StatusCode" in post && post.StatusCode === 404) notFound();
 
