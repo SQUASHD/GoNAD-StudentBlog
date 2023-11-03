@@ -7,8 +7,8 @@ export const blogConfig: BlogConfig = {
       href: "/posts",
     },
     {
-      title: "Comments",
-      href: "/comments",
+      title: "Dashboard",
+      href: "/dashboard",
     },
     {
       title: "Profile",

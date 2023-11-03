@@ -30,6 +30,8 @@ import {
   Book,
   LucideMenu,
   BarChart,
+  Pencil,
+  Eye,
 } from "lucide-react";
 
 export const Icons = {
@@ -45,7 +47,7 @@ export const Icons = {
   settings: Settings,
   billing: CreditCard,
   ellipsis: MoreVertical,
-  add: Plus,
+  plus: Plus,
   warning: AlertTriangle,
   user: User,
   arrowRight: ArrowRight,
@@ -64,4 +66,6 @@ export const Icons = {
   logo: Book,
   menu: LucideMenu,
   dashboard: BarChart,
+  edit: Pencil,
+  eye: Eye,
 };

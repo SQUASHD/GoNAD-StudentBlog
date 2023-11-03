@@ -7,24 +7,31 @@ import Link from "next/link";
 import { usePathname, useSelectedLayoutSegment } from "next/navigation";
 import { useLayoutEffect, useState } from "react";
 import { Icons } from "./icons";
+import { DarkModeToggle } from "./theme";
 
 type MainNavProps = {
   items?: MainNavItem[];
   children?: React.ReactNode;
+  className?: string;
 };
 
-export function MainNav({ items, children }: MainNavProps) {
+export function MainNav({ items, children, className }: MainNavProps) {
   const segment = useSelectedLayoutSegment();
   const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
 
   return (
-    <div className="flex gap-6 md:gap-10">
-      <Link href="/" className="hidden items-center space-x-2 md:flex">
-        <Icons.logo />
-        <span className="hidden font-bold sm:inline-block">
-          {siteConfig.name}
-        </span>
-      </Link>
+    <div
+      className={cn("flex w-full justify-between gap-6 md:gap-10", className)}
+    >
+      <div className="flex gap-2">
+        <Link href="/" className="hidden items-center space-x-2 md:flex">
+          <Icons.logo />
+          <span className="hidden font-bold sm:inline-block">
+            {siteConfig.name}
+          </span>
+        </Link>
+        <DarkModeToggle />
+      </div>
       {items?.length ? (
         <nav className="hidden gap-6 md:flex">
           {items?.map((item, index) => (

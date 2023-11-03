@@ -10,6 +10,10 @@ import { Button } from "./ui/button";
 import Link from "next/link";
 import { PostResDto } from "@/types/converted-dtos/PostDtos";
 import { UserResDto } from "@/types/converted-dtos/UserDtos";
+import Markdown, { defaultUrlTransform } from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { prettifyDate } from "@/lib/format";
+import { MarkdownFormatWrapper } from "./formatted";
 
 type CommentPreviewProps = {
   comment: CommentResDto;
@@ -37,14 +41,34 @@ type PostPreviewProps = {
 
 export function PostPreview({ post }: PostPreviewProps) {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{post.title}</CardTitle>
+    <Card className="w-full">
+      <CardHeader className="w-full">
+        <CardTitle className="w-full">
+          <div className="flex justify-between w-full">
+            <span className="max-w-sm">{post.title}</span>
+            <span className="text-sm text-gray-500">
+              {prettifyDate(post.createdAt)}
+            </span>
+          </div>
+        </CardTitle>
       </CardHeader>
-      <CardContent>{post.content}</CardContent>
+      <CardContent>
+        <MarkdownFormatWrapper className="max-h-xl overflow-hidden w-full">
+          <Markdown
+            urlTransform={defaultUrlTransform}
+            remarkPlugins={[remarkGfm]}
+          >
+            {post.content}
+          </Markdown>
+        </MarkdownFormatWrapper>
+      </CardContent>
       <CardFooter>
         <Button asChild>
-          <Link href={`/posts/${post.id}`}>Read more</Link>
+          {post.content.length > 1000 ? (
+            <Link href={`/posts/${post.id}`}>Read more</Link>
+          ) : (
+            <Link href={`/posts/${post.id}`}>Read the post</Link>
+          )}
         </Button>
       </CardFooter>
     </Card>
