@@ -25,7 +25,7 @@ jobs:
 
       - name: Build and push Docker image to Artifact Registry
         run: |
-          gcloud builds submit ./Backend --tag europe-west2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/studentblog-backend-repo/studentblog-backend:latest
+          gcloud builds submit ./backend --tag europe-west2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/studentblog-backend-repo/studentblog-backend:latest
         env:
           PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
           
