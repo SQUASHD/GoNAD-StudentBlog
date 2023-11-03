@@ -125,14 +125,16 @@ public class CommentServiceTests
     [Fact]
     public async Task CreateAsync_ReturnsCommentResDto_WhenCommentIsCreated()
     {
+        var currentDate = DateTime.Now;
         // Arrange
         var data = new InternalCreateCommentData(1, 1, "Comment 1");
-        var comment = new Comment { Id = 1, Content = "Comment 1" };
-        var createdComment = new Comment { Id = 1, Content = "Comment 1" };
+        var comment = new Comment { Id = 1, Content = "Comment 1", PostId = 1, UserId = 1, CreatedAt = currentDate, UpdatedAt = currentDate };
+        var createdComment = new Comment { Id = 1, Content = "Comment 1", CreatedAt = currentDate, UpdatedAt = currentDate };
         var commentDto = new CommentResDto(createdComment.Id, createdComment.PostId, createdComment.UserId, createdComment.Content, createdComment.CreatedAt, createdComment.UpdatedAt);
         _commentMapperMock.Setup(x => x.MapToModel(data)).Returns(comment);
         _commentRepositoryMock.Setup(x => x.CreateAsync(comment)).ReturnsAsync(createdComment);
         _commentMapperMock.Setup(x => x.MapToResDto(createdComment)).Returns(commentDto);
+        _postRepositoryMock.Setup(x => x.GetByIdAsync(data.PostId)).ReturnsAsync(new Post { Id = data.PostId });
 
         // Act
         var result = await _commentService.CreateAsync(data);

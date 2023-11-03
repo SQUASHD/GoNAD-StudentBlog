@@ -478,3 +478,6 @@ $RECYCLE.BIN/
 
 # IDEA
 .idea
+
+# Environment Variables
+.env

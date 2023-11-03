@@ -1,3 +1,6 @@
+![Frontend CI](https://github.com/SQUASHD/GoNAD-StudentBlog/actions/workflows/ci-frontend.yml/badge.svg)
+![Backend CI](https://github.com/SQUASHD/GoNAD-StudentBlog/actions/workflows/ci-backend.yml/badge.svg)
+![Backend CD](https://github.com/SQUASHD/GoNAD-StudentBlog/actions/workflows/cd-backend.yml/badge.svg)
 # GoNAD-StudentBlog
 
 **Go** CLI Utilities, **N**extJS frontend,**A**SP.NET Core Backend with **D**ockerization. Or `GoNAD` for short.

@@ -1,4 +1,4 @@
-name: CD - ASP.NET Core Backend
+name: CD - Studentblog Backend
 
 on:
   push:
