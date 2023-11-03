@@ -21,13 +21,14 @@ using StudentBlogAPI.Services.Implementations;
 using StudentBlogAPI.Services.Interfaces;
 using StudentBlogAPI.Validators;
 
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 var builder = WebApplication.CreateBuilder(args);
-
+builder.WebHost.UseUrls($"http://*:{port}");
 // Add services to the container.
 
 // This is to allow the examiners to run the application without having to set the environment variable
-var databaseUrl = builder.Configuration["ConnectionStrings:DefaultConnection"]
-                  ?? builder.Configuration.GetConnectionString("DefaultConnection");
+var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL") ??
+                  builder.Configuration.GetConnectionString("DefaultConnection");
 
 // Entity Framework
 builder.Services.AddDbContext<StudentBlogDbContext>(options =>
@@ -67,7 +68,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = false,
             ValidIssuer = builder.Configuration["Jwt:AccessIssuer"],
             IssuerSigningKey =
-                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ??
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY") ??
                                                                 throw new InvalidOperationException()))
         };
     });
@@ -128,7 +129,6 @@ builder.Services.AddScoped<ITokenMapper, TokenMapper>();
 
 var app = builder.Build();
 
-app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -139,9 +139,11 @@ if (app.Environment.IsDevelopment())
 
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 
 app.UseCors();
 // app.UseHttpsRedirection();

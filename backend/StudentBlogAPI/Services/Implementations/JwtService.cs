@@ -32,7 +32,7 @@ public class JwtService : IJwtService
 
     public string GenerateAccessToken(int userId)
     {
-        var jwtKey = _config["Jwt:Key"];
+        var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? _config["Jwt:Key"];
         if (string.IsNullOrEmpty(jwtKey))
             throw new InvalidOperationException("The JWT secret key is missing from the configuration.");
 
@@ -56,7 +56,7 @@ public class JwtService : IJwtService
 
     public string GenerateRefreshToken(int userId)
     {
-        var jwtKey = _config["Jwt:Key"];
+        var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? _config["Jwt:Key"];
         if (string.IsNullOrEmpty(jwtKey))
             throw new InvalidOperationException("The JWT secret key is missing from the configuration.");
 

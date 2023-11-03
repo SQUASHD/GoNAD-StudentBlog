@@ -63,7 +63,8 @@ namespace StudentBlogAPI.Data.Migrations
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(32)
+                        .HasColumnType("varchar(32)");
 
                     b.Property<string>("Title")
                         .IsRequired()
