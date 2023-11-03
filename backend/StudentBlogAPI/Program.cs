@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -34,16 +35,21 @@ builder.Services.AddDbContext<StudentBlogDbContext>(options =>
         new MySqlServerVersion(new Version(8, 0))));
 
 builder.Services.AddControllers(options =>
-{
-    // Adding the ValidationErrorHandlingFilter
-    options.Filters.Add(new ValidationErrorHandlingFilter());
+    {
+        // Adding the ValidationErrorHandlingFilter
+        options.Filters.Add(new ValidationErrorHandlingFilter());
 
-    // Building and adding the global authorization filter
-    var authorizationPolicy = new AuthorizationPolicyBuilder()
-        .RequireAuthenticatedUser()
-        .Build();
-    options.Filters.Add(new AuthorizeFilter(authorizationPolicy));
-});
+        // Building and adding the global authorization filter
+        var authorizationPolicy = new AuthorizationPolicyBuilder()
+            .RequireAuthenticatedUser()
+            .Build();
+        options.Filters.Add(new AuthorizeFilter(authorizationPolicy));
+    })
+    .AddJsonOptions(options =>
+    {
+        // Convert enums to strings in JSON
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 // Make the API return validation errors in the response body
 builder.Services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });

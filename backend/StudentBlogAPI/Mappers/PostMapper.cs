@@ -39,7 +39,7 @@ public class PostMapper : IPostMapper
     {
         return new Post
         {
-            UserId = data.CurrenUserId,
+            UserId = data.CurrentUserId,
             Title = data.Title,
             Content = data.Content
         };

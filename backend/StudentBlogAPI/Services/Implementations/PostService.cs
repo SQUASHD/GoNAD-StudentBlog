@@ -48,16 +48,18 @@ public class PostService : IPostService
     public async Task<PostResDto?> UpdateAsync(InternalUpdatePostData data)
     {
         var existingPost = await _postRepository.GetByIdAsync(data.PostId);
-        
+
         if (existingPost == null) throw new ItemNotFoundException("Post not found");
-        
+
         if (data.Status == PublicationStatus.Draft && existingPost.Status == PublicationStatus.Published)
             throw new UserForbiddenException("Cannot change status from published to draft");
-        
-        if (existingPost.UserId != data.CurrenUserId) throw new UserForbiddenException();
+
+        if (existingPost.UserId != data.CurrentUserId)
+            throw new UserForbiddenException("You do not have permission to edit this post");
 
         existingPost.Title = data.Title;
         existingPost.Content = data.Content;
+        existingPost.Status = data.Status;
         existingPost.UpdatedAt = DateTime.Now;
 
         var updatedPost = await _postRepository.UpdateAsync(existingPost);

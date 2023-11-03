@@ -20,7 +20,7 @@ public class User
     [Required] [MaxLength(256)] public string HashedPassword { get; set; } = string.Empty;
 
     [Required] [MaxLength(256)] public string Salt { get; set; } = string.Empty;
-
+    
     [Required]
     [EmailAddress]
     [UniqueEmail]

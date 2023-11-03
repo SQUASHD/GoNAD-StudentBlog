@@ -31,11 +31,11 @@ public class PostsController : ControllerBase
         [FromQuery] int page = 1,
         [FromQuery] int size = 10,
         [FromQuery] string orderBy = "asc"
-        )
+    )
     {
         if (page < 1 || size < 1) return BadRequest("Page and size parameters must be greater than 0");
         if (orderBy != "asc" && orderBy != "desc") return BadRequest("Invalid orderBy parameter");
-        
+
         var data = new InternalGetAllPostsData(
             page,
             size,

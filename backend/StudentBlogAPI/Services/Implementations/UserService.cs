@@ -50,7 +50,7 @@ public class UserService : IUserService
 
         var (posts, totalPosts) =
             await _postRepository.GetPostsByUserIdAsync(data.UserId, data.PageNumber, data.PageSize);
-        
+
         if (posts == null) throw new ItemNotFoundException($"No posts by user with {data.UserId}");
 
         var postsDtos = _postMapper.MapCollection(posts);

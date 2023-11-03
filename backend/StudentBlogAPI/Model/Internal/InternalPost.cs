@@ -7,6 +7,7 @@ public record InternalGetAllPostsData(
     int PageSize,
     string OrderBy
 );
+
 public record InternalCreatePostData(
     int CurrentUserId,
     string Title,
@@ -19,7 +20,7 @@ public record InternalGetPostByIdData(
 );
 
 public record InternalUpdatePostData(
-    int CurrenUserId,
+    int CurrentUserId,
     int PostId,
     string Title,
     string Content,

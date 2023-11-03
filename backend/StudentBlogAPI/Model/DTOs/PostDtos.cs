@@ -11,7 +11,7 @@ public record UpdatePostReqDto(
     string Title,
     string Content,
     PublicationStatus Status
-    );
+);
 
 public record PostResDto(
     int Id,
