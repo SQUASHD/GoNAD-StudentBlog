@@ -25,7 +25,9 @@ export default async function LoginPage({
       <div className="flex flex-col">
         <div
           className={cn(
-            isAuth ? "flex flex-col items-center justify-center h-full" : "h-0 invisible overflow-hidden"
+            isAuth
+              ? "flex flex-col items-center justify-center h-full"
+              : "h-0 invisible overflow-hidden"
           )}
         >
           <h1 className="text-5xl font-bold tracking-tighter">
@@ -41,7 +43,9 @@ export default async function LoginPage({
             </form>
           </div>
         </div>
-        <div className={cn(isAuth ? "h-0 invisible overflow-hidden" : "visible")}>
+        <div
+          className={cn(isAuth ? "h-0 invisible overflow-hidden" : "visible")}
+        >
           <LoginForm redirectUrl={searchParams.redirect} />
         </div>
       </div>

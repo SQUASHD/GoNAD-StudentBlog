@@ -1,11 +1,7 @@
-import { refreshAccessToken } from "@/app/_actions/auth";
 import { RefreshSessionForm } from "@/components/auth/auth-forms";
-import { Button } from "@/components/ui/button";
 import { getAccessToken, getRefreshToken } from "@/lib/auth";
 import { RedirectUserParams } from "@/types";
 import { redirect } from "next/navigation";
-
-
 
 export default function RefreshSession({
   searchParams,
