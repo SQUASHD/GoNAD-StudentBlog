@@ -7,13 +7,11 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="h-full w-screen flex flex-col">
-      <div className="w-full mx-auto">
-        <div className="flex w-full justify-center h-20 items-center py-6">
-          <MainNav items={blogConfig.mainNav} />
-        </div>
+    <div className="min-h-full w-screen flex flex-col relative">
+      <div className="flex w-full h-20 items-center justify-center py-6 sticky top-0 bg-background">
+        <MainNav items={blogConfig.mainNav} className=" max-w-screen-lg" />
       </div>
-      <div className="flex flex-1 flex-col items-center justify-center">
+      <div className="flex w-full flex-grow flex-col items-center justify-center">
         {children}
       </div>
     </div>

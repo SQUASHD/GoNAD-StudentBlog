@@ -4,63 +4,32 @@ import { PaginatedResultDto } from "@/types/GenericDtos";
 import { CommentResDto } from "@/types/converted-dtos/CommenDtos";
 import { PostResDto } from "@/types/converted-dtos/PostDtos";
 import { UserResDto } from "@/types/converted-dtos/UserDtos";
-import { Fragment } from "react";
-import { H1 } from "@/components/typography";
-import { CommentsCard, PostPreview, UsersCard } from "@/components/previews";
+
+import { H2 } from "@/components/typography";
+import { PostPreview } from "@/components/previews";
 
 export const revalidate = 0;
 
 export default async function HomePage() {
   await auth("/");
-  const postsReq = typedFetchWithAuth<PaginatedResultDto<PostResDto>>("/posts");
-
-  const commentsReq =
-    typedFetchWithAuth<PaginatedResultDto<CommentResDto>>("/comments");
-
-  const usersReq = typedFetchWithAuth<PaginatedResultDto<UserResDto>>("/users");
-
-  let [posts, comments, users] = await Promise.all([
-    postsReq,
-    commentsReq,
-    usersReq,
-  ]);
+  let posts = await typedFetchWithAuth<PaginatedResultDto<PostResDto>>(
+    "/posts?size=10&orderBy=desc"
+  );
 
   posts = posts as PaginatedResultDto<PostResDto>;
-  comments = comments as PaginatedResultDto<CommentResDto>;
-  users = users as PaginatedResultDto<UserResDto>;
-
   return (
-    <Fragment>
-      <div className="flex flex-col gap-8">
-        <H1>Recent Posts</H1>
+    <div className="flex flex-col h-full max-w-5xl">
+      <div className="flex flex-col gap-8 w-full">
+        <H2>Recent Posts</H2>
         {posts?.items.length === 0 && <p>No posts yet.</p>}
-        <ul className="grid grid-cols-3 gap-x-6 gap-y-3">
+        <ul className="flex flex-col gap-4 w-full">
           {posts?.items.map((post) => (
             <li key={post.id}>
               <PostPreview post={post} />
             </li>
           ))}
         </ul>
-        <H1>Recent Comments</H1>
-        {comments?.items.length === 0 && <p>No comments yet.</p>}
-        <ul className="grid grid-cols-3 gap-x-6 gap-y-3">
-          {comments?.items.map((comment) => (
-            <li key={comment.id}>
-              <CommentsCard comment={comment} />
-            </li>
-          ))}
-        </ul>
-
-        <H1>Recent Users</H1>
-        {users?.items.length === 0 && <p>No users yet.</p>}
-        <ul className="grid grid-cols-3 gap-x-6 gap-y-3">
-          {users?.items.map((user) => (
-            <li key={user.id}>
-              <UsersCard user={user} />
-            </li>
-          ))}
-        </ul>
       </div>
-    </Fragment>
+    </div>
   );
 }

@@ -1,13 +1,16 @@
+import { FormattedPageSection } from "@/components/formatted";
 import { PostPreview } from "@/components/previews";
+import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
 import { typedFetchWithAuth } from "@/lib/fetch";
+import { getSearchQueryString } from "@/lib/utils";
+import { PaginatedSearchParams } from "@/types";
 import { PaginatedResultDto } from "@/types/GenericDtos";
 import { PostResDto } from "@/types/converted-dtos/PostDtos";
+import Link from "next/link";
+
 import { notFound } from "next/navigation";
-type PostsSearchParams = {
-  page: string;
-  size: string;
-};
+import { Fragment } from "react";
 
 export const revalidate = 0;
 
@@ -19,31 +22,42 @@ export const metadata = {
 export default async function PostsPage({
   searchParams,
 }: {
-  searchParams: PostsSearchParams;
-  }) {
+  searchParams: PaginatedSearchParams;
+}) {
   await auth("/posts");
-  const pageQuery = searchParams.page ? `?page=${searchParams.page}` : "";
-  const sizeQuery = searchParams.size ? `&size=${searchParams.size}` : "";
+
+  const searchParamsQuery = getSearchQueryString(searchParams);
 
   const posts = await typedFetchWithAuth<PaginatedResultDto<PostResDto>>(
-    `/posts${pageQuery}${sizeQuery}`
+    `/posts${searchParamsQuery}`
   );
 
   if ("StatusCode" in posts && posts.StatusCode === 404) notFound();
 
   if ("items" in posts)
     return (
-      <div>
-        <h1 className="font-semibold text-4xl text-center py-8">
-          Recent posts
-        </h1>
-        <ul className="grid grid-cols-3 space-x-6">
-          {posts?.items.map((post) => (
-            <li key={post.id}>
-              <PostPreview post={post} />
-            </li>
-          ))}
-        </ul>
-      </div>
+      <Fragment>
+        <FormattedPageSection>
+          <h1 className="font-semibold text-4xl text-center py-8">
+            Recent posts
+          </h1>
+          <ul className="grid space-y-6">
+            {posts?.items.map((post) => (
+              <li key={post.id}>
+                <PostPreview post={post} />
+              </li>
+            ))}
+          </ul>
+        </FormattedPageSection>
+        <FormattedPageSection>
+          {posts?.currentPage < posts?.totalPages && (
+            <Button>
+              <Link href={`/posts?page=${posts?.currentPage + 1}`}>
+                Next page
+              </Link>
+            </Button>
+          )}
+        </FormattedPageSection>
+      </Fragment>
     );
 }
