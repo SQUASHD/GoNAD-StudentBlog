@@ -19,10 +19,12 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const healthURL = env.NEXT_PUBLIC_API_URL + "/health";
+
   let healthy = true;
   try {
     await fetch(healthURL);
   } catch (e) {
+    console.error(e);
     healthy = false;
   }
 
