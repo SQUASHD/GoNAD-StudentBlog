@@ -2,16 +2,23 @@ name: ci-backend
 
 on:
   push:
+    paths:
+      - "backend/**"
     branches:
-      - '**'
-      - '!main'
+      - main  
   pull_request:
+    paths:
+      - "backend/**"
     branches:
       - main
+
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
     steps:
       - uses: actions/checkout@v2
       
@@ -21,10 +28,10 @@ jobs:
           dotnet-version: '7.0.307' 
       
       - name: Restore dependencies
-        run: dotnet restore ./Backend/StudentBlogApi.sln
+        run: dotnet restore ./StudentBlogApi.sln
       
       - name: Build
-        run: dotnet build ./Backend/StudentBlogApi.sln --configuration Release --no-restore
+        run: dotnet build ./StudentBlogApi.sln --configuration Release --no-restore
       
       - name: Test
-        run: dotnet test ./Backend/StudentBlogApi.sln --configuration Release --no-build
+        run: dotnet test ./StudentBlogApi.sln --configuration Release --no-build
