@@ -5,7 +5,7 @@ on:
     paths:
       - "frontend/**"
     branches:
-      - main 
+      - main
   pull_request:
     paths:
       - "frontend/**"
@@ -16,35 +16,30 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend
 
     steps:
       - uses: actions/checkout@v2
-
-      - name: List directories in root
-        run: ls -lah
-
 
       - name: Cache Node.js modules
         uses: actions/cache@v3
         with:
           path: |
             ~/.npm
-            .next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+            frontend/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('frontend/package-lock.json') }}-${{ hashFiles('frontend/**/*.{js,jsx,ts,tsx}') }}
           restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+            ${{ runner.os }}-nextjs-${{ hashFiles('frontend/package-lock.json') }}-
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: "18"
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: npm install
+        working-directory: frontend
 
       - name: Build
         run: npm run build
+        working-directory: frontend
