@@ -14,6 +14,7 @@ public class PostMapper : IPostMapper
             model.UserId,
             model.Title,
             model.Content,
+            model.Status,
             model.CreatedAt,
             model.UpdatedAt
         );

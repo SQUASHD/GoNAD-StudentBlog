@@ -6,8 +6,8 @@ namespace StudentBlogAPI.Services.Interfaces;
 
 public interface IPostService
 {
-    Task<PaginatedResultDto<PostResDto>> GetAllAsync(int pageNumber, int pageSize);
-    Task<PostResDto?> GetByIdAsync(int id);
+    Task<PaginatedResultDto<PostResDto>> GetAllAsync(InternalGetAllPostsData data);
+    Task<PostResDto?> GetByIdAsync(InternalGetPostByIdData data);
     Task<PostResDto?> CreateAsync(InternalCreatePostData data);
     Task<PostResDto?> UpdateAsync(InternalUpdatePostData data);
     Task<PostResDto?> DeleteAsync(InternalDeletePostData data);

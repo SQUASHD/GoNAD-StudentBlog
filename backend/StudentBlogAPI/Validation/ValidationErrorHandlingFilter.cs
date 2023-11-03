@@ -11,16 +11,16 @@ public class ValidationErrorHandlingFilter : IActionFilter
         var errorResponse = new ValidationErrorResponse();
 
         foreach (var state in context.ModelState)
-            foreach (var error in state.Value.Errors)
+        foreach (var error in state.Value.Errors)
+        {
+            var validationError = new ValidationError
             {
-                var validationError = new ValidationError
-                {
-                    Field = state.Key,
-                    Message = error.ErrorMessage
-                };
+                Field = state.Key,
+                Message = error.ErrorMessage
+            };
 
-                errorResponse.Errors.Add(validationError);
-            }
+            errorResponse.Errors.Add(validationError);
+        }
 
         context.Result = new BadRequestObjectResult(errorResponse);
     }

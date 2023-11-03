@@ -14,7 +14,8 @@ public class CommentService : ICommentService
     private readonly ICommentRepository _commentRepository;
     private readonly IPostRepository _postRepository;
 
-    public CommentService(ICommentMapper commentMapper, ICommentRepository commentRepository, IPostRepository postRepository)
+    public CommentService(ICommentMapper commentMapper, ICommentRepository commentRepository,
+        IPostRepository postRepository)
     {
         _commentMapper = commentMapper;
         _commentRepository = commentRepository;
@@ -37,7 +38,7 @@ public class CommentService : ICommentService
     {
         var post = await _postRepository.GetByIdAsync(postId);
         if (post == null) throw new ItemNotFoundException("No post found for the given id");
-        
+
         var comments = await _commentRepository.GetCommentsByPostIdAsync(postId);
         if (comments == null) throw new ItemNotFoundException("No comments found for the given post");
         var commentsDto = _commentMapper.MapCollection(comments);
@@ -48,7 +49,7 @@ public class CommentService : ICommentService
     {
         var post = await _postRepository.GetByIdAsync(data.PostId);
         if (post == null) throw new ItemNotFoundException("No post found for the given id");
-        
+
         var comment = _commentMapper.MapToModel(data);
         var createdComment = await _commentRepository.CreateAsync(comment);
         return _commentMapper.MapToResDto(createdComment);

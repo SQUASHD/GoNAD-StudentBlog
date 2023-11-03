@@ -1,12 +1,13 @@
 using StudentBlogAPI.Exceptions;
 using StudentBlogAPI.Mappers.Interfaces;
 using StudentBlogAPI.Model.DTOs;
+using StudentBlogAPI.Model.Entities;
 using StudentBlogAPI.Model.Internal;
 using StudentBlogAPI.Repository.Interfaces;
 using StudentBlogAPI.Services.Interfaces;
 using StudentBlogAPI.Utilities;
 
-namespace StudentBlogAPI.Services;
+namespace StudentBlogAPI.Services.Implementations;
 
 public class PostService : IPostService
 {
@@ -19,19 +20,21 @@ public class PostService : IPostService
         _postRepository = postRepository;
     }
 
-    public async Task<PaginatedResultDto<PostResDto>> GetAllAsync(int pageNumber, int pageSize)
+    public async Task<PaginatedResultDto<PostResDto>> GetAllAsync(InternalGetAllPostsData data)
     {
-        var (posts, totalPosts) = await _postRepository.GetAllAsync(pageNumber, pageSize);
+        var (posts, totalPosts) = await _postRepository.GetAllAsync(data);
         if (posts == null) throw new ItemNotFoundException("Posts not found matching the given criteria");
         var postsDto = _postMapper.MapCollection(posts);
 
-        return new PaginatedResultDto<PostResDto>(postsDto, pageNumber, pageSize, totalPosts);
+        return new PaginatedResultDto<PostResDto>(postsDto, data.PageNumber, data.PageSize, totalPosts);
     }
 
-    public async Task<PostResDto?> GetByIdAsync(int id)
+    public async Task<PostResDto?> GetByIdAsync(InternalGetPostByIdData data)
     {
-        var post = await _postRepository.GetByIdAsync(id);
+        var post = await _postRepository.GetByIdAsync(data.PostId);
         if (post == null) throw new ItemNotFoundException("Post not found");
+        if (post.Status == PublicationStatus.Draft && post.UserId != data.CurrentUserId)
+            throw new UserForbiddenException("Cannot access draft post of another user");
         return _postMapper.MapToResDto(post);
     }
 
@@ -45,7 +48,12 @@ public class PostService : IPostService
     public async Task<PostResDto?> UpdateAsync(InternalUpdatePostData data)
     {
         var existingPost = await _postRepository.GetByIdAsync(data.PostId);
+        
         if (existingPost == null) throw new ItemNotFoundException("Post not found");
+        
+        if (data.Status == PublicationStatus.Draft && existingPost.Status == PublicationStatus.Published)
+            throw new UserForbiddenException("Cannot change status from published to draft");
+        
         if (existingPost.UserId != data.CurrenUserId) throw new UserForbiddenException();
 
         existingPost.Title = data.Title;

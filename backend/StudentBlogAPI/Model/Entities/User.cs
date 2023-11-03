@@ -17,7 +17,7 @@ public class User
 
     [Required] [MaxLength(64)] public string LastName { get; set; } = string.Empty;
 
-    [Required] [MaxLength(256)]  public string HashedPassword { get; set; } = string.Empty;
+    [Required] [MaxLength(256)] public string HashedPassword { get; set; } = string.Empty;
 
     [Required] [MaxLength(256)] public string Salt { get; set; } = string.Empty;
 

@@ -6,7 +6,7 @@ using StudentBlogAPI.Repository.Interfaces;
 using StudentBlogAPI.Services.Interfaces;
 using StudentBlogAPI.Utilities;
 
-namespace StudentBlogAPI.Services;
+namespace StudentBlogAPI.Services.Implementations;
 
 public class UserService : IUserService
 {
@@ -43,11 +43,19 @@ public class UserService : IUserService
         return _userMapper.MapToResDto(user);
     }
 
-    public async Task<ICollection<PostResDto>> GetPostsByUserIdAsync(int userId)
+    public async Task<PaginatedResultDto<PostResDto>> GetPostsByUserIdAsync(InternalGetPostsByUserIdData data)
     {
-        var posts = await _postRepository.GetPostsByUserIdAsync(userId);
-        if (posts == null) throw new ItemNotFoundException($"No posts by user with {userId}");
-        return _postMapper.MapCollection(posts);
+        if (data.CurrentUserId != data.UserId)
+            throw new UserForbiddenException("You are not authorized to view this user's posts");
+
+        var (posts, totalPosts) =
+            await _postRepository.GetPostsByUserIdAsync(data.UserId, data.PageNumber, data.PageSize);
+        
+        if (posts == null) throw new ItemNotFoundException($"No posts by user with {data.UserId}");
+
+        var postsDtos = _postMapper.MapCollection(posts);
+
+        return new PaginatedResultDto<PostResDto>(postsDtos, data.PageNumber, data.PageSize, totalPosts);
     }
 
     public async Task<UserResDto?> UpdateUserInfoAsync(InternalUpdateUserInfoData data)

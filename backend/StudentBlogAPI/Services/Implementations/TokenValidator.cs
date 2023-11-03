@@ -44,9 +44,7 @@ public class TokenValidator : ITokenValidator
     {
         var jwtKey = _config["Jwt:Key"];
         if (string.IsNullOrEmpty(jwtKey))
-        {
             throw new InvalidOperationException("The JWT secret key is missing from the configuration.");
-        }
 
         var validationParameters = new TokenValidationParameters
         {
@@ -68,6 +66,4 @@ public class TokenValidator : ITokenValidator
 
         return validatedToken != null;
     }
-
-
 }

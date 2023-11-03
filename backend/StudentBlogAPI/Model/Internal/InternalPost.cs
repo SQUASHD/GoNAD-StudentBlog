@@ -1,16 +1,29 @@
+using StudentBlogAPI.Model.Entities;
+
 namespace StudentBlogAPI.Model.Internal;
 
+public record InternalGetAllPostsData(
+    int PageNumber,
+    int PageSize,
+    string OrderBy
+);
 public record InternalCreatePostData(
     int CurrentUserId,
     string Title,
     string Content
 );
 
+public record InternalGetPostByIdData(
+    int CurrentUserId,
+    int PostId
+);
+
 public record InternalUpdatePostData(
     int CurrenUserId,
     int PostId,
     string Title,
-    string Content
+    string Content,
+    PublicationStatus Status
 );
 
 public record InternalDeletePostData(

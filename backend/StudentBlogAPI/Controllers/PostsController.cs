@@ -12,12 +12,13 @@ namespace StudentBlogAPI.Controllers;
 public class PostsController : ControllerBase
 {
     private readonly ICommentService _commentService;
-    private readonly IPostService _postService;
     private readonly IJwtService _jwtService;
+    private readonly IPostService _postService;
     private readonly ITokenValidator _tokenValidator;
 
 
-    public PostsController(IPostService postService, IJwtService jwtService, ICommentService commentService, ITokenValidator tokenValidator)
+    public PostsController(IPostService postService, IJwtService jwtService, ICommentService commentService,
+        ITokenValidator tokenValidator)
     {
         _postService = postService;
         _jwtService = jwtService;
@@ -26,24 +27,39 @@ public class PostsController : ControllerBase
     }
 
     [HttpGet(Name = "GetPosts")]
-    public async Task<ActionResult<PaginatedResultDto<PostResDto>>> GetPosts([FromQuery] int page = 1,
-        [FromQuery] int size = 10)
+    public async Task<ActionResult<PaginatedResultDto<PostResDto>>> GetPosts(
+        [FromQuery] int page = 1,
+        [FromQuery] int size = 10,
+        [FromQuery] string orderBy = "asc"
+        )
     {
         if (page < 1 || size < 1) return BadRequest("Page and size parameters must be greater than 0");
+        if (orderBy != "asc" && orderBy != "desc") return BadRequest("Invalid orderBy parameter");
+        
+        var data = new InternalGetAllPostsData(
+            page,
+            size,
+            orderBy
+        );
 
-        var paginatedPosts = await _postService.GetAllAsync(page, size);
+        var paginatedPosts = await _postService.GetAllAsync(data);
         return Ok(paginatedPosts);
     }
 
     [HttpGet("{postId}", Name = "GetPostById")]
     public async Task<ActionResult<PostResDto>> GetPostById(int postId)
     {
-        var post = await _postService.GetByIdAsync(postId);
+        var currentUserId = this.GetCurrentUserId(_jwtService, _tokenValidator);
+        var data = new InternalGetPostByIdData(
+            currentUserId,
+            postId
+        );
+        var post = await _postService.GetByIdAsync(data);
         return Ok(post);
     }
 
     [HttpPost(Name = "CreatePost")]
-    public async Task<ActionResult<PostResDto>> CreatePost(PostInputReqDto reqDto)
+    public async Task<ActionResult<PostResDto>> CreatePost(CreatePostReqDto reqDto)
     {
         var currentUserId = this.GetCurrentUserId(_jwtService, _tokenValidator);
 
@@ -66,7 +82,7 @@ public class PostsController : ControllerBase
     }
 
     [HttpPut("{postId}", Name = "UpdatePost")]
-    public async Task<ActionResult<PostResDto>> UpdatePost(int postId, PostInputReqDto reqDto)
+    public async Task<ActionResult<PostResDto>> UpdatePost(int postId, UpdatePostReqDto reqDto)
     {
         var currentUserId = this.GetCurrentUserId(_jwtService, _tokenValidator);
 
@@ -74,7 +90,8 @@ public class PostsController : ControllerBase
             currentUserId,
             postId,
             reqDto.Title,
-            reqDto.Content
+            reqDto.Content,
+            reqDto.Status
         );
 
         var updatedPost = await _postService.UpdateAsync(data);
@@ -88,8 +105,8 @@ public class PostsController : ControllerBase
         var currentUserId = this.GetCurrentUserId(_jwtService, _tokenValidator);
 
         var data = new InternalDeletePostData(
-            currentUserId,
-            postId
+            postId,
+            currentUserId
         );
 
         var deletedPost = await _postService.DeleteAsync(data);

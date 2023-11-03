@@ -23,3 +23,10 @@ public record InternalDeleteUserData(
     int CurrentUserId,
     int UserToDeleteId
 );
+
+public record InternalGetPostsByUserIdData(
+    int CurrentUserId,
+    int UserId,
+    int PageNumber,
+    int PageSize
+);

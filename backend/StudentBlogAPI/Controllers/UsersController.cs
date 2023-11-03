@@ -12,8 +12,8 @@ namespace StudentBlogAPI.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly IJwtService _jwtService;
-    private readonly IUserService _userService;
     private readonly ITokenValidator _tokenValidator;
+    private readonly IUserService _userService;
 
 
     public UsersController(IUserService userService, IJwtService jwtService, ITokenValidator tokenValidator)
@@ -40,6 +40,27 @@ public class UsersController : ControllerBase
     {
         var user = await _userService.GetByIdAsync(userId);
         return user != null ? Ok(user) : NotFound();
+    }
+
+    [HttpGet("{userId}/posts", Name = "GetUserPosts")]
+    public async Task<ActionResult<PaginatedResultDto<PostResDto>>> GetUserPosts(int userId, [FromQuery] int page = 1,
+        [FromQuery] int size = 10)
+    {
+        if (page < 1 || size < 1)
+            return BadRequest("Page and size parameters must be greater than 0");
+
+        var currentUserId = this.GetCurrentUserId(_jwtService, _tokenValidator);
+
+        var data = new InternalGetPostsByUserIdData(
+            currentUserId,
+            userId,
+            page,
+            size
+        );
+
+        var paginatedPosts = await _userService.GetPostsByUserIdAsync(data);
+
+        return Ok(paginatedPosts);
     }
 
     [HttpPut("{userId}", Name = "UpdateUserInfo")]

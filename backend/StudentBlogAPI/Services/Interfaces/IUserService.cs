@@ -8,7 +8,7 @@ public interface IUserService
 {
     Task<PaginatedResultDto<UserResDto>> GetAllAsync(int pageNumber, int pageSize);
     Task<UserResDto?> GetByIdAsync(int id);
-    Task<ICollection<PostResDto>> GetPostsByUserIdAsync(int userId);
+    Task<PaginatedResultDto<PostResDto>> GetPostsByUserIdAsync(InternalGetPostsByUserIdData data);
     Task<UserResDto?> UpdateUserInfoAsync(InternalUpdateUserInfoData data);
     Task<UserResDto?> UpdatePasswordAsync(InternalUpdatePasswordReqData data);
 

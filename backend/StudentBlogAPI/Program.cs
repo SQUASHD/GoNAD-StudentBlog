@@ -13,6 +13,7 @@ using StudentBlogAPI.Mappers;
 using StudentBlogAPI.Mappers.Interfaces;
 using StudentBlogAPI.Middleware;
 using StudentBlogAPI.Repository;
+using StudentBlogAPI.Repository.Implementations;
 using StudentBlogAPI.Repository.Interfaces;
 using StudentBlogAPI.Services;
 using StudentBlogAPI.Services.Implementations;
@@ -67,7 +68,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 // Rate limiting middleware
 builder.Services.AddRateLimiter(l =>
-    l.AddFixedWindowLimiter(policyName: "fixed", options =>
+    l.AddFixedWindowLimiter("fixed", options =>
     {
         options.PermitLimit = 100;
         options.Window = TimeSpan.FromSeconds(12);
