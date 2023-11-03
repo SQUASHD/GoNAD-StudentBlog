@@ -23,8 +23,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: List frontend directory structure
-        run: ls -la frontend/
+      - name: List directories in root
+        run: ls -lah
 
 
       - name: Cache Node.js modules
