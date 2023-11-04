@@ -35,9 +35,9 @@ To get your own monorepo from hell up and running.
 
 1. Clone the repository:
 
-   ```bash
-   git clone https://github.com/SQUASHD/GoNAD-StudentBlog.git`
-   ```
+```bash
+git clone https://github.com/SQUASHD/GoNAD-StudentBlog.git
+```
 
 2. Follow the setup instructions in the README.md of each component.
 
