@@ -5,6 +5,8 @@ import {
 } from "@/components/formatted";
 import { auth } from "@/lib/auth";
 import { typedFetchWithAuth } from "@/lib/fetch";
+import { prettifyDate } from "@/lib/format";
+import { nTimeAgo } from "@/lib/format/dates";
 import { CommentResDto } from "@/types/converted-dtos/CommenDtos";
 import { PostResDto } from "@/types/converted-dtos/PostDtos";
 import { Metadata } from "next";
@@ -57,15 +59,22 @@ export default async function Page({ params }: Props) {
       <FormattedPageSection>
         <div className="flex flex-col items-center w-full">
           <CommentForm postId={postId} />
-          <ul className="flex flex-col w-full">
+          <ul className="flex flex-col w-full gap-2 py-2">
             {comments instanceof Array && comments.length > 0
               ? comments?.map((comment) => (
                   <li key={comment.id}>
-                    <div className="w-full flex gap-2">
+                    <div className="w-full flex gap-2 p-2">
                       <div>
-                        <div className="w-8 aspect-square rounded-full bg-primary-foreground" />
+                        <div className="w-8 aspect-square rounded-full bg-secondary" />
                       </div>
-                      <div>
+
+                      <div className="flex-flex-col">
+                        <div className="flex gap-2 items-center">
+                          <span className="font-bold">Username</span>
+                          <span className="text-sm text-muted-foreground">
+                            {nTimeAgo(comment.createdAt)}
+                          </span>
+                        </div>
                         <span>{comment.content}</span>
                       </div>
                     </div>

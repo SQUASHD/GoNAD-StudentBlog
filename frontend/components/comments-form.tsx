@@ -1,6 +1,6 @@
 "use client";
 import { createComment, deleteCommentById } from "@/app/_actions/comment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { z } from "zod";
 import { useToast } from "./ui/use-toast";
 import { useForm } from "react-hook-form";
@@ -59,6 +59,22 @@ export default function CommentForm({ postId }: CommentFormProps) {
     },
   });
 
+  const {
+    formState: { errors },
+  } = createCommentForm;
+
+  useEffect(() => {
+    for (const error of Object.values(errors)) {
+      if (error) {
+        toast({
+          title: "Validation Error",
+          description: error.message || "You have a validation error",
+          variant: "destructive",
+        });
+      }
+    }
+  }, [errors, toast]);
+
   return (
     <Form {...createCommentForm}>
       <form
@@ -73,7 +89,8 @@ export default function CommentForm({ postId }: CommentFormProps) {
               <Textarea
                 placeholder="Write a comment..."
                 {...field}
-                className="w-full"
+                className="w-full relative"
+                maxLength={140}
               />
             </FormControl>
           )}
