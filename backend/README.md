@@ -1,3 +1,5 @@
+![Backend CI](https://github.com/SQUASHD/GoNAD-StudentBlog/actions/workflows/ci-backend.yml/badge.svg)
+![Backend CD](https://github.com/SQUASHD/GoNAD-StudentBlog/actions/workflows/cd-backend.yml/badge.svg)
 # Student Blog API
 
 This ASP.NET Core backend started initially as coursework for my vocational degree in Backend Programming, but has
