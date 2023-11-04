@@ -1,3 +1,6 @@
+![Frontend CI](https://github.com/SQUASHD/GoNAD-StudentBlog/actions/workflows/ci-frontend.yml/badge.svg)
+![Frontend CD Preview](https://github.com/SQUASHD/GoNAD-StudentBlog/actions/workflows/cd-frontend-preview.yml/badge.svg)
+![Frontend CD](https://github.com/SQUASHD/GoNAD-StudentBlog/actions/workflows/cd-frontend-prod.yml/badge.svg)
 # Student Blog Frontend
 
 Welcome to the part of the stack that puts the 'N' in 'GoNAD' – the NextJS frontend for my Student Blog.
