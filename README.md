@@ -1,6 +1,6 @@
 ![Frontend CI](https://github.com/SQUASHD/GoNAD-StudentBlog/actions/workflows/ci-frontend.yml/badge.svg)
 ![Frontend CD Preview](https://github.com/SQUASHD/GoNAD-StudentBlog/actions/workflows/cd-frontend-preview.yml/badge.svg)
-![Frontend CD](https://github.com/SQUASHD/GoNAD-StudentBlog/actions/workflows/cd-frontend-pro.yml/badge.svg)
+![Frontend CD](https://github.com/SQUASHD/GoNAD-StudentBlog/actions/workflows/cd-frontend-prod.yml/badge.svg)
 ![Backend CI](https://github.com/SQUASHD/GoNAD-StudentBlog/actions/workflows/ci-backend.yml/badge.svg)
 ![Backend CD](https://github.com/SQUASHD/GoNAD-StudentBlog/actions/workflows/cd-backend.yml/badge.svg)
 
