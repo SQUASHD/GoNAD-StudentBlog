@@ -1,67 +1,117 @@
-# Project Description: Student Blog
+# Updated Project Description: Student Blog
 
-These are the original specifications for the Student Blog project, translated from Norwegian to English with the help of ChatGPT.
+## Security
 
-## Purpose:
+### Authentication
 
-The goal is to create a simple blogging platform where users can register, log in, write posts, and leave comments on posts. This will be a Controller-based API.
+- Must be a registered user to use the REST API and must send a username and password with each request to the REST API.
+- Can register a new user without having to authenticate with a username and password.
+- Unauthorized users should receive HTTP status 401 Unauthorized.
 
-## Components:
+### Authorization
 
-1. **Presentation (API):**
+- Users can only update, post data, and delete their own posts and comments and will receive HTTP status code 401 Unauthorized if they attempt to modify data that does not belong to them.
 
-   - **Endpoints (Controller):**
-     - **User:**
-       - `POST /api/v1/users/register`: Register a new user.
-       - `GET /api/v1/users/`: Retrieve information about all users.
-       - `GET /api/v1/users/{id}`: Retrieve information about a specific user.
-       - `DELETE /api/v1/users/{id}`: Delete a specific user.
-       - `UPDATE /api/v1/users/{id}`: Update a specific user's information.
-     - **Admin:** (only for admin users)
-       - `DELETE/UPDATE /api/v1/....`: Admin operations.
-     - **Posts:**
-       - `POST /api/v1/posts`: Add a new post (authentication required).
-       - `GET /api/v1/posts`: Retrieve all posts.
-       - `GET /api/v1/posts/{postId}`: Retrieve a specific post.
-       - `PUT /api/v1/posts/{postId}`: Update a specific post, only own posts (authentication required).
-       - `DELETE /api/v1/posts/{postId}`: Delete a specific post, only own posts (authentication required).
-     - **Comments:**
-       - `POST /api/posts/{postId}/comments`: Add a comment to a specific post.
-       - `GET /api/posts/{postId}/comments`: Retrieve all comments for a specific post.
-       - `PUT /api/comments/{commentId}`: Update a specific comment. Only own comments (authentication required).
-       - `DELETE /api/comments/{commentId}`: Delete a specific comment. Only own comments (authentication required).
-   - **Middleware:**
-     - Basic Authentication: Verifies user credentials.
-     - Logging: Logs important events, errors, and system information.
-     - Data validation.
+## Components
 
-2. **Service Layer:**
+### Presentation (API)
 
-   - Handles business logic.
-   - Performs authorization based on business rules (e.g., a user can only edit/delete their own posts).
-   - Calls the Repository Layer for database access.
+#### Endpoints (Controller)
 
-3. **Repository Layer:**
-   - Direct interaction with the MySQL database - Entity Framework.
-   - CRUD operations for 'User', 'Posts', and 'Comments'.
+**Users**
 
-## Functionality:
+_Open for all_
 
-1. **User:**
-   - Registration with username and password (hashing with salt using BCrypt or similar).
-2. **Posts:**
-   - Users can write new posts.
-   - Users can edit and delete their own posts.
-   - Everyone can view posts.
-3. **Comments:**
-   - Authenticated users can comment on posts.
-   - Comment authors can edit and delete their own comments.
-   - Everyone can view comments associated with a post.
+- `POST /api/v1/users/register`: Register a new user.
 
-## Technical Specifications:
+_Requires Authentication_
 
-1. **Authentication:** Implemented as middleware using Basic Authentication.
-2. **Database:**
-   - MySQL with the tables 'User', 'Posts', and 'Comments'.
-   - Use of Entity Framework.
-3. **Logging:** Use of a logging solution like Serilog or built-in logging in ASP.NET Core to log system events.
+- `GET /api/v1/users?page=1&size=10`: Retrieve information about all users (with pagination).
+- `GET /api/v1/users/{id}`: Retrieve information about a specific user.
+
+_Optional_
+
+- `GET /api/v1/users/{id}/posts`: Retrieve all posts for this user.
+
+_Requires Authentication / Authorization_
+
+- `DELETE /api/v1/users/{id}` (check authorization)
+- `UPDATE /api/v1/users/{id}` (check authorization)
+
+**Posts**
+
+_Requires Authentication_
+
+- `GET /api/v1/posts?page=1&size=10`: Retrieve all posts (with pagination).
+- `GET /api/v1/posts/{postId}`: Retrieve a specific post.
+- `POST /api/v1/posts`: Add a new post.
+
+_Optional_
+
+- `GET /api/v1/posts/{postId}/comments`: Retrieve all comments for a specific post.
+
+_Requires Authentication / Authorization_
+
+- `PUT /api/v1/posts/{postId}`: Update a specific post, only own posts.
+- `DELETE /api/v1/posts/{postId}`: Delete a specific post, only own posts.
+
+**Comments**
+
+_Requires Authentication_
+
+- `GET /api/v1/comments?page=1&size=10`: Retrieve all comments (with pagination).
+- `POST /api/v1/comments/{postId}`: Add a comment to a specific post.
+
+_Requires Authentication / Authorization_
+
+- `PUT /api/v1/comments/{commentId}`: Update a specific comment. Only own comments.
+- `DELETE /api/v1/comments/{commentId}`: Delete a specific comment. Only own comments.
+
+### Middleware
+
+- Basic Authentication: Verifies user credentials.
+- Logging: Logs important events, errors, and system information.
+
+### Service Layer
+
+- Handles business logic.
+- Performs authorization based on business rules (e.g., a user can only edit/delete their own posts).
+- Calls the Repository Layer for database access.
+
+### Repository Layer
+
+- Direct interaction with the MySQL database - Entity Framework.
+- CRUD operations for 'User', 'Posts', and 'Comments'.
+
+## Functionality
+
+### User
+
+- Registration with username and password (hashing with salt using BCrypt or similar).
+
+### Posts
+
+- Users can write new posts.
+- Users can edit and delete their own posts.
+- All registered users can view all posts.
+
+### Comments
+
+- Authenticated users can comment on posts.
+- Comment authors can edit and delete their own comments.
+- All can view comments associated with a post.
+
+## Technical Specifications
+
+### Authentication
+
+- Implemented as middleware using Basic Authentication.
+
+### Database
+
+- MySQL with tables 'User', 'Posts', and 'Comments'.
+- Use of Entity Framework.
+
+### Logging
+
+- Use of a logging solution like Serilog or built-in logging in ASP.NET Core to log system events.

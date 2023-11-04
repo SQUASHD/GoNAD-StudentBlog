@@ -8,8 +8,9 @@ Welcome to the part of the stack that puts the 'N' in 'GoNAD' – the NextJS fro
 ## Table of Contents
 
 - [Quick Start](#quick-start)
+- [Using NPM](#using-npm)
+- [Using Docker](#using-docker)
 - [Features](#features)
-- [Setting It Up](#setting-it-up)
 
 ## Quick Start
 
@@ -70,3 +71,4 @@ Now you should be able to access the application at `http://localhost:3000`.
 - Some simple JWT handling
 - Protected routes / conditional rendering
 - React server components
+- Markdown Editor
