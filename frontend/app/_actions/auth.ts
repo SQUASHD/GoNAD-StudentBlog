@@ -22,7 +22,7 @@ import { ApiErrorResponse } from "@/lib/errors";
 
 export async function loginUser(values: z.infer<typeof loginFormSchema>) {
   let loginRes = await typedFetch<AuthWithTokenResDto | ApiErrorResponse>(
-    `${env.NEXT_PUBLIC_API_URL}/Auth/login`,
+    `${env.NEXT_PUBLIC_API_URL}/auth/login`,
     {
       cache: "no-cache",
       method: "POST",

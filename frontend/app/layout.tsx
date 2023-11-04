@@ -24,7 +24,6 @@ export default async function RootLayout({
   try {
     await fetch(healthURL);
   } catch (e) {
-    console.error(e);
     healthy = false;
   }
 
