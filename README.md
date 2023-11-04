@@ -15,7 +15,6 @@ but I wanted to go beyond the requirements.
 
 - [Overview](#overview)
 - [Getting Started](#getting-started)
-- [Setting Up Workflows](#setting-up-workflows)
 - [Prerequisites](#prerequisites)
 
 ## Overview
