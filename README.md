@@ -23,7 +23,6 @@ API.
 - `backend`: A fully fledged N-layer architecture [REST API](./backend/) for a simple CRUD application.
 
 And why stop there? Why shouldn't I make it run in docker containers with a full CI/CD pipeline?
-TODO: actually get docker and ci/cd pipeline up
 
 ## Getting Started
 
