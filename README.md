@@ -1,16 +1,22 @@
+![Frontend CD](https://github.com/SQUASHD/GoNAD-StudentBlog/actions/workflows/cd-frontend.yml/badge.svg)
 ![Frontend CI](https://github.com/SQUASHD/GoNAD-StudentBlog/actions/workflows/ci-frontend.yml/badge.svg)
-![Frontend CD Preview](https://github.com/SQUASHD/GoNAD-StudentBlog/actions/workflows/cd-frontend-preview.yml/badge.svg)
-![Frontend CD](https://github.com/SQUASHD/GoNAD-StudentBlog/actions/workflows/cd-frontend-prod.yml/badge.svg)
 ![Backend CI](https://github.com/SQUASHD/GoNAD-StudentBlog/actions/workflows/ci-backend.yml/badge.svg)
 ![Backend CD](https://github.com/SQUASHD/GoNAD-StudentBlog/actions/workflows/cd-backend.yml/badge.svg)
 
 # GoNAD-StudentBlog
 
-**Go** CLI Utilities, **N**extJS frontend,**A**SP.NET Core Backend with **D**ockerization. Or `GoNAD` for short.
+**Go** CLI Utilities, **N**extJS frontend,**A**SP.NET Core Backend with **D**ockerization. Or `GoNAD` for short – the monorepo from hell.
 
 Welcome to the `GoNAD-StudentBlog` - the monorepo that just doesn't make sense, with the stack no one asked for, leveraging only half the power of NextJS and ASP.NET Core.
 Concocted in a fever dream when I got a school assignment to make an asp.net core backend with basic authorization
 but I wanted to go beyond the requirements.
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Getting Started](#getting-started)
+- [Setting Up Workflows](#setting-up-workflows)
+- [Prerequisites](#prerequisites)
 
 ## Overview
 
@@ -22,20 +28,21 @@ API.
 - `frontend`: A [NextJS frontend](./frontend/), leveraging RSC (React Server Components) to make a seamless user experience.
 - `backend`: A fully fledged N-layer architecture [REST API](./backend/) for a simple CRUD application.
 
-And why stop there? Why shouldn't I make it run in docker containers with a full CI/CD pipeline?
+And why stop there? Why shouldn't I make it run in docker containers?
 
 ## Getting Started
 
-TODO:
+To get your own monorepo from hell up and running.
 
-### Prequisites
+1. Clone the repository:
 
-### Cloning the Repo
+   ```bash
+   git clone https://github.com/SQUASHD/GoNAD-StudentBlog.git`
+   ```
 
-### Setting up
+2. Follow the setup instructions in the README.md of each component.
 
-#### Backend
+## Prequisites
 
-#### Frontend
-
-#### Environment Variables
+1. A MySQL database
+2. Possibly Docker

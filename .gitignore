@@ -482,3 +482,4 @@ $RECYCLE.BIN/
 # Environment Variables
 .env
 .vercel
+.env.local
