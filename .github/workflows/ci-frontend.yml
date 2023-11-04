@@ -29,5 +29,5 @@ jobs:
         run: npm ci
         working-directory: frontend
       - name: Check code formatting
-        run: npx prettier --check "frontend/**/*.{js,jsx,ts,tsx,json,css,md}"
+        run: npx prettier --check "**/*.{js,jsx,ts,tsx,json,css,md}"
         working-directory: frontend
