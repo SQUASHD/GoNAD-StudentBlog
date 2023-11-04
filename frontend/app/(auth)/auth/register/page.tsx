@@ -17,7 +17,7 @@ export default async function RegistrationPage() {
           className={cn(
             isAuth
               ? "flex flex-col items-center justify-center h-full"
-              : "h-0 invisible overflow-hidden"
+              : "h-0 invisible overflow-hidden",
           )}
         >
           <h1 className="text-5xl font-bold tracking-tighter">

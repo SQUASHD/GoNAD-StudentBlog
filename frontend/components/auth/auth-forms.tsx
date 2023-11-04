@@ -122,7 +122,7 @@ export function LoginForm({ redirectUrl }: LoginFormProps) {
 export function RegisterForm() {
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  
+
   const router = useRouter();
 
   const registerForm = useForm<z.infer<typeof registerFormSchema>>({
@@ -142,8 +142,7 @@ export function RegisterForm() {
       const res = await registerUser(data);
       if ("StatusCode" in res) {
         setErr(res.Message);
-      }
-      else if (res.accessToken) {
+      } else if (res.accessToken) {
         router.push("/");
       }
     } finally {

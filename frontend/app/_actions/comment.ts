@@ -16,7 +16,7 @@ export async function createComment(data: z.infer<typeof createCommentSchema>) {
       body: JSON.stringify({
         content: data.content,
       } satisfies CommentInputReqDto),
-    }
+    },
   );
 
   // TODO: standardize ok response to get type-safe status code

@@ -13,7 +13,7 @@ export const revalidate = 0;
 export default async function HomePage() {
   await auth("/");
   let posts = await typedFetchWithAuth<PaginatedResultDto<PostResDto>>(
-    "/posts?size=10&orderBy=desc"
+    "/posts?size=10&orderBy=desc",
   );
 
   posts = posts as PaginatedResultDto<PostResDto>;

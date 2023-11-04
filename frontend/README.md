@@ -31,7 +31,7 @@ cp .env.example .env
 # Edit .env with your specific variables
 ```
 
-###  Using npm
+### Using npm
 
 1. Install the dependencies:
 
@@ -63,7 +63,7 @@ docker run -p 3000:3000 studentblog-frontend
 
 Now you should be able to access the application at `http://localhost:3000`.
 
-*NOTE*: You won't see much if you haven't set up the Backend API.
+_NOTE_: You won't see much if you haven't set up the Backend API.
 
 ## Features
 

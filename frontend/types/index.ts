@@ -11,7 +11,7 @@ export type PaginatedSearchParams = {
   page: string;
   size: string;
   // TODO: Add orderBy
-  // orderBy: string; 
+  // orderBy: string;
 };
 
 export type MainNavItem = NavItem;

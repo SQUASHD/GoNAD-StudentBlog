@@ -33,7 +33,7 @@ export async function loginUser(values: z.infer<typeof loginFormSchema>) {
         userName: values.username,
         password: values.password,
       } satisfies UserLoginReqDto),
-    }
+    },
   );
 
   // TODO: Handle errors
@@ -85,7 +85,7 @@ export async function refreshAccessToken() {
       headers: {
         Authorization: `Bearer ${refreshToken}`,
       },
-    }
+    },
   );
 
   if ("StatusCode" in refreshRes) {

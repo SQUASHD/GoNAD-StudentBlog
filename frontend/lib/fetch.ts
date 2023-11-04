@@ -4,14 +4,14 @@ import { ApiError, ApiErrorResponse } from "./errors";
 
 export async function typedFetch<T>(
   url: string,
-  options?: RequestInit
+  options?: RequestInit,
 ): Promise<T> {
   return fetch(url, options).then((res) => res.json());
 }
 
 export async function typedFetchWithAuth<T>(
   endpoint: string,
-  options?: RequestInit
+  options?: RequestInit,
 ): Promise<T | ApiErrorResponse> {
   const baseURL = env.NEXT_PUBLIC_API_URL;
   const requestURL = `${baseURL}${endpoint}`;

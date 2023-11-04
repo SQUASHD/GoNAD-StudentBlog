@@ -18,4 +18,3 @@ const endpoints: Endpoint[] = [
     path: "/auth/logout",
   },
 ];
-

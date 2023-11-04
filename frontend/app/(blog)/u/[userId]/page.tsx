@@ -10,7 +10,7 @@ type Props = {
 export async function generateMetadata({ params }: Props) {
   const id = params.userId;
   const user = (await typedFetchWithAuth<UserResDto>(
-    `/users/${id}`
+    `/users/${id}`,
   )) as UserResDto;
 
   return {

@@ -26,7 +26,7 @@ export function MarkdownFormatWrapper({ children, className }: MDWrapperProps) {
     <article
       className={cn(
         "prose prose-p:text-primary prose-headings:text-primary",
-        className
+        className,
       )}
     >
       {children}

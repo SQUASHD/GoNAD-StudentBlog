@@ -59,7 +59,7 @@ import { useRouter } from "next/navigation";
 function useTabbedSpaces(
   textareaVal: string,
   setTextareaVal: (value: string) => void,
-  textareaRef: MutableRefObject<HTMLTextAreaElement | null>
+  textareaRef: MutableRefObject<HTMLTextAreaElement | null>,
 ) {
   return useCallback(
     (event: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -131,7 +131,7 @@ function useTabbedSpaces(
         }, 0);
       }
     },
-    [textareaVal, setTextareaVal, textareaRef]
+    [textareaVal, setTextareaVal, textareaRef],
   );
 }
 
@@ -161,7 +161,7 @@ export default function Editor({ post }: EditorProps) {
   const router = useRouter();
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(
-    null
+    null,
   ) as MutableRefObject<HTMLTextAreaElement | null>;
 
   async function submitUpdate(data: z.infer<typeof updatePostSchema>) {
@@ -229,7 +229,7 @@ export default function Editor({ post }: EditorProps) {
   const handleKeyDown = useTabbedSpaces(
     textareaVal,
     setTextareaVal,
-    textareaRef
+    textareaRef,
   );
 
   return (

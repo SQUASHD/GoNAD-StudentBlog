@@ -1,6 +1,10 @@
 "use server";
 import { typedFetchWithAuth } from "@/lib/fetch";
-import { CreatePostReqDto, UpdatePostReqDto, PostResDto } from "@/types/converted-dtos/PostDtos";
+import {
+  CreatePostReqDto,
+  UpdatePostReqDto,
+  PostResDto,
+} from "@/types/converted-dtos/PostDtos";
 import { z } from "zod";
 import { updatePostSchema } from "@/components/editor-client";
 import { revalidatePath } from "next/cache";

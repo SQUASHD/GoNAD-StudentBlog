@@ -8,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export const debounce = <F extends (...args: Parameters<F>) => ReturnType<F>>(
   func: F,
-  waitFor: number
+  waitFor: number,
 ) => {
   let timeout: NodeJS.Timeout;
 

@@ -4,4 +4,4 @@ export type PaginatedResultDto<T> = {
   pageSize: number;
   totalPages: number;
   totalItems: number;
-}
+};

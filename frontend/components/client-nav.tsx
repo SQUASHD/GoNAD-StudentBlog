@@ -43,7 +43,7 @@ export function MainNav({ items, children, className }: MainNavProps) {
                 item.href.startsWith(`/${segment}`)
                   ? "text-foreground"
                   : "text-foreground/60",
-                item.disabled && "cursor-not-allowed opacity-80"
+                item.disabled && "cursor-not-allowed opacity-80",
               )}
             >
               {item.title}
@@ -73,7 +73,7 @@ interface MobileNavProps {
 export function useLockBody() {
   useLayoutEffect((): (() => void) => {
     const originalStyle: string = window.getComputedStyle(
-      document.body
+      document.body,
     ).overflow;
     document.body.style.overflow = "hidden";
     return () => (document.body.style.overflow = originalStyle);
@@ -86,7 +86,7 @@ export function MobileNav({ items, children }: MobileNavProps) {
   return (
     <div
       className={cn(
-        "fixed inset-0 top-16 z-50 grid h-[calc(100vh-4rem)] grid-flow-row auto-rows-max overflow-auto p-6 pb-32 shadow-md animate-in slide-in-from-bottom-80 md:hidden"
+        "fixed inset-0 top-16 z-50 grid h-[calc(100vh-4rem)] grid-flow-row auto-rows-max overflow-auto p-6 pb-32 shadow-md animate-in slide-in-from-bottom-80 md:hidden",
       )}
     >
       <div className="relative z-20 grid gap-6 rounded-md bg-popover p-4 text-popover-foreground shadow-md">
@@ -101,7 +101,7 @@ export function MobileNav({ items, children }: MobileNavProps) {
               href={item.disabled ? "#" : item.href}
               className={cn(
                 "flex w-full items-center rounded-md p-2 text-sm font-medium hover:underline",
-                item.disabled && "cursor-not-allowed opacity-60"
+                item.disabled && "cursor-not-allowed opacity-60",
               )}
             >
               {item.title}
@@ -136,7 +136,7 @@ export function DashboardNav({ items }: DashboardNavProps) {
                 className={cn(
                   "group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground",
                   path === item.href ? "bg-accent" : "transparent",
-                  item.disabled && "cursor-not-allowed opacity-80"
+                  item.disabled && "cursor-not-allowed opacity-80",
                 )}
               >
                 <Icon className="mr-2 h-4 w-4" />

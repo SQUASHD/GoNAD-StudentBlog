@@ -1,18 +1,11 @@
 name: CI - StudentBlog Backend
 
 on:
-  push:
-    paths:
-      - "backend/**"
-      - '!**/*.md'
-    branches:
-      - main
   pull_request:
+    branches: [main]
     paths:
       - "backend/**"
-      - '!**/*.md'
-    branches:
-      - main
+      - "!**/*.md"
   workflow_dispatch:
 
 jobs:
@@ -23,17 +16,17 @@ jobs:
         working-directory: ./backend
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v2
         with:
-          dotnet-version: '7.0.x'
-      
+          dotnet-version: "7.0.x"
+
       - name: Clean
         run: dotnet clean ./StudentBlogAPI.sln --configuration Release
-      
+
       - name: Restore dependencies
         run: dotnet restore ./StudentBlogAPI.sln
-      
+
       - name: Build
         run: dotnet build ./StudentBlogAPI.sln --configuration Release --no-restore

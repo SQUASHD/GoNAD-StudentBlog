@@ -29,7 +29,7 @@ export default async function PostsPage({
   const searchParamsQuery = getSearchQueryString(searchParams);
 
   const posts = await typedFetchWithAuth<PaginatedResultDto<PostResDto>>(
-    `/posts${searchParamsQuery}`
+    `/posts${searchParamsQuery}`,
   );
 
   if ("StatusCode" in posts && posts.StatusCode === 404) notFound();

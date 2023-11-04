@@ -30,7 +30,7 @@ async function getPost(id: string) {
 
 async function getComments(id: string) {
   const comments = await typedFetchWithAuth<Array<CommentResDto>>(
-    `/posts/${id}/comments`
+    `/posts/${id}/comments`,
   );
   console.log(comments);
   return comments;
@@ -40,9 +40,9 @@ export default async function Page({ params }: Props) {
   const postId = params.postId ? params.postId : "1";
   await auth(`/posts/${postId}`);
 
-  let postReq =  getPost(postId);
+  let postReq = getPost(postId);
   let commentsReq = getComments(postId);
-  
+
   let [post, comments] = await Promise.all([postReq, commentsReq]);
 
   if ("StatusCode" in post && post.StatusCode === 404) notFound();

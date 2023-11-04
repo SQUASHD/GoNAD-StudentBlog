@@ -12,7 +12,7 @@ type JWTAccessTokenPayload = {
 };
 
 type JWTRefreshTokenPayload = {
-  user_id: string
+  user_id: string;
   exp: number;
   iss: typeof refreshIssuer;
 };
@@ -23,7 +23,7 @@ export const accessTokenDuration = 1000 * 60 * 60 * 3; // 3 hours in millisecond
 export const refreshTokenDuration = 1000 * 60 * 60 * 24; // 24 hours in milliseconds
 
 export function parseJwt(
-  token: string
+  token: string,
 ): JWTAccessTokenPayload | JWTRefreshTokenPayload {
   const toBuffer: string = token.split(".")[1] ?? "";
   return JSON.parse(Buffer.from(toBuffer, "base64").toString());

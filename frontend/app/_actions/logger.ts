@@ -15,28 +15,28 @@ export default function logError(entry: LogEntry, level: ErrorLevel) {
       console.error(
         `[CRITICAL] [${entry.timestamp}]`,
         entry.message,
-        entry.additionalInfo
+        entry.additionalInfo,
       );
       break;
     case "warning":
       console.warn(
         `[WARNING] [${entry.timestamp}]`,
         entry.message,
-        entry.additionalInfo
+        entry.additionalInfo,
       );
       break;
     case "info":
       console.info(
         `[INFO] [${entry.timestamp}]`,
         entry.message,
-        entry.additionalInfo
+        entry.additionalInfo,
       );
       break;
     default:
       console.log(
         `[UNKNOWN] [${entry.timestamp}]`,
         entry.message,
-        entry.additionalInfo
+        entry.additionalInfo,
       );
       break;
   }

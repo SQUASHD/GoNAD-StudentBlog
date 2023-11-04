@@ -4,7 +4,10 @@ export type ApiErrorResponse = {
 };
 
 export class ApiError extends Error {
-  constructor(public StatusCode: number, public Message: string) {
+  constructor(
+    public StatusCode: number,
+    public Message: string,
+  ) {
     super(Message);
   }
 }
