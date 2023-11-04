@@ -2,11 +2,15 @@ name: CI - StudentBlog Backend
 
 on:
   push:
+    paths-ignore:
+      - '**/*.md'
     paths:
       - "backend/**"
     branches:
       - main
   pull_request:
+    paths-ignore:
+      - '**/*.md'
     paths:
       - "backend/**"
     branches:
