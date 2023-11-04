@@ -8,6 +8,8 @@ on:
       - main
     paths:
       - 'frontend/**'
+  workflow_dispatch:
+
 jobs:
   Deploy-Production:
     runs-on: ubuntu-latest
