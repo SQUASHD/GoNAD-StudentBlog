@@ -1,13 +1,13 @@
 steps:
   - name: "gcr.io/cloud-builders/docker"
     args:
-      [
-        "build",
-        "-t",
-        "europe-west2-docker.pkg.dev/$PROJECT_ID/studentblog-frontend-repo/studentblog-frontend:latest",
-        "--build-arg",
-        "NEXT_PUBLIC_API_URL=https://studentblog-backend-zion66dn5a-nw.a.run.app/api/v1",
-        ".",
-      ]
+      - "build"
+      - "--build-arg"
+      - "NEXT_PUBLIC_API_URL=$_NEXT_PUBLIC_API_URL"
+      - "-t"
+      - "europe-west2-docker.pkg.dev/$PROJECT_ID/studentblog-frontend-repo/studentblog-frontend:latest"
+      - "."
 images:
   - "europe-west2-docker.pkg.dev/$PROJECT_ID/studentblog-frontend-repo/studentblog-frontend:latest"
+substitutions:
+  _NEXT_PUBLIC_API_URL: "https://studentblog-backend-zion66dn5a-nw.a.run.app/api/v1"
