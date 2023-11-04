@@ -17,6 +17,7 @@ export async function createNewPost() {
       content: "",
     } satisfies CreatePostReqDto),
   });
+  revalidatePath("/dashboard/posts", "page");
 
   return res;
 }
