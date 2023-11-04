@@ -6,8 +6,7 @@ on:
       - main
     paths:
       - 'backend/**'
-    paths-ignore:
-      - '**/*.md'
+      - '!**/*.md'
 
 jobs:
   build-and-push:

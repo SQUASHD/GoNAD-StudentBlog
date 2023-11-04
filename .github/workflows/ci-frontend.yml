@@ -2,17 +2,15 @@ name: CI - StudentBlog Frontend
 
 on:
   push:
-    paths-ignore:
-      - '**/README.md'
     paths:
       - "frontend/**"
+      - '!**/*.md'
     branches:
       - main
   pull_request:
-    paths-ignore:
-      - '**/README.md'
     paths:
       - "frontend/**"
+      - '!**/*.md'
     branches:
       - main
   workflow_dispatch:
