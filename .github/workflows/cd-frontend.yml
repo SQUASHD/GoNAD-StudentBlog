@@ -1,13 +1,13 @@
 name: CD - Studentblog Frontend
 
 on:
-    push:
-      branches:
-        - main
-      paths:
-        - 'frontend/**'
-        - '!**/*.md'
-    workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "frontend/**"
+      - "!**/*.md"
+  workflow_dispatch:
 
 jobs:
   build-and-push:
@@ -16,13 +16,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - id: 'auth'
-        uses: 'google-github-actions/auth@v1'
+      - id: "auth"
+        uses: "google-github-actions/auth@v1"
         with:
-          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+          credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
 
-      - name: 'Set up Cloud SDK'
-        uses: 'google-github-actions/setup-gcloud@v1'
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v1"
 
       - name: Build and push Docker image to Artifact Registry
         run: |
@@ -32,8 +32,8 @@ jobs:
           --project=${{ secrets.GCP_PROJECT_ID }}
         env:
           PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-          
-      - name: 'Deploy to Cloud Run'
+
+      - name: "Deploy to Cloud Run"
         run: |
           gcloud run deploy studentblog-frontend \
           --image europe-west2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/studentblog-frontend-repo/studentblog-frontend:latest \

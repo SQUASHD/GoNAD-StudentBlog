@@ -12,7 +12,7 @@ export default async function RootLayout({
         <MainNav items={blogConfig.mainNav} className=" max-w-screen-lg" />
       </div>
       <div className="flex w-full flex-grow flex-col items-center justify-center">
-        {children}
+        <div className="max-w-screen-md w-full">{children}</div>
       </div>
     </div>
   );

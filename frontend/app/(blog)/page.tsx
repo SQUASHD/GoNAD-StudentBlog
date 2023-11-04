@@ -18,8 +18,8 @@ export default async function HomePage() {
 
   posts = posts as PaginatedResultDto<PostResDto>;
   return (
-    <div className="flex flex-col h-full max-w-5xl">
-      <div className="flex flex-col gap-8 w-full">
+    <div className="flex flex-col h-full w-full">
+      <div className="flex flex-col gap-8 w-full pb-8 flex-grow">
         <H2>Recent Posts</H2>
         {posts?.items.length === 0 && <p>No posts yet.</p>}
         <ul className="flex flex-col gap-4 w-full">

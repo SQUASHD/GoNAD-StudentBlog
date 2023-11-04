@@ -5,8 +5,8 @@ on:
     branches:
       - main
     paths:
-      - 'backend/**'
-      - '!**/*.md'
+      - "backend/**"
+      - "!**/*.md"
   workflow_dispatch:
 
 jobs:
@@ -16,21 +16,21 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - id: 'auth'
-        uses: 'google-github-actions/auth@v1'
+      - id: "auth"
+        uses: "google-github-actions/auth@v1"
         with:
-          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+          credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
 
-      - name: 'Set up Cloud SDK'
-        uses: 'google-github-actions/setup-gcloud@v1'
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v1"
 
       - name: Build and push Docker image to Artifact Registry
         run: |
           gcloud builds submit ./backend --tag europe-west2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/studentblog-backend-repo/studentblog-backend:latest
         env:
           PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-          
-      - name: 'Deploy to Cloud Run'
+
+      - name: "Deploy to Cloud Run"
         run: |
           gcloud run deploy studentblog-backend \
           --image europe-west2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/studentblog-backend-repo/studentblog-backend:latest \
@@ -38,4 +38,3 @@ jobs:
           --allow-unauthenticated \
           --project ${{ secrets.GCP_PROJECT_ID }} \
           --max-instances=4
-      

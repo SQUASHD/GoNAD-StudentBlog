@@ -34,6 +34,7 @@ export async function updatePost(values: z.infer<typeof updatePostSchema>) {
   if ("content" in res) {
     revalidatePath(`/posts/${res.id}`, "page");
     revalidatePath(`/dashboard/posts`, "page");
+    revalidatePath("/", "page");
   }
 
   return res;

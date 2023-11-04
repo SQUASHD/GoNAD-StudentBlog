@@ -46,14 +46,19 @@ export function PostPreview({ post }: PostPreviewProps) {
         <CardTitle className="w-full">
           <div className="flex justify-between w-full">
             <span className="max-w-sm">{post.title}</span>
-            <span className="text-sm text-gray-500">
-              {prettifyDate(post.createdAt)}
-            </span>
+            <div className="flex flex-col">
+              <span className="text-sm text-gray-500">
+                {prettifyDate(post.createdAt)}
+              </span>
+              <span className="text-sm text-primary-muted text-right">
+                Username
+              </span>
+            </div>
           </div>
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <MarkdownFormatWrapper className="max-h-xl overflow-hidden w-full">
+        <MarkdownFormatWrapper className="max-h-96 overflow-hidden w-full">
           <Markdown
             urlTransform={defaultUrlTransform}
             remarkPlugins={[remarkGfm]}
